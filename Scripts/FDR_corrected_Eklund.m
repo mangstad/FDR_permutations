@@ -5,6 +5,7 @@
 % http://doi.org/10.1073/pnas.1602413113
 %
 
+%% setting variables
 zthreshes = [2.3 3.1]; %Z thresholds to evaluate
 Tasks = {
     'RhymeJudgment';
@@ -30,12 +31,15 @@ eklsumsr= [1 3 2 0 2     1 5 3 2   6 9 2 4 7 2 10 8 0 0 2     0 10 1 0   9 12 8 
 Exp = '/net/pepper/Eklund/FDR_perms/';
 ResultsFolder = 'perms_'; %folder to load permutation results from
 
+
+%% start calculation
 output = [];
 eklsumscounter = 1;
 
 for iThresh = 1:numel(zthreshes)
     for iTask = 1:numel(Tasks)
         for iContrast = Contrasts{iTask}
+            %% set up current contrast values
             Task = Tasks{iTask};
             sNum = sprintf('%d',iContrast);
             zthresh = zthreshes(iThresh);
@@ -46,6 +50,7 @@ for iThresh = 1:numel(zthreshes)
             OutputPath = [Exp Task '/contrast' sNum '/' ResultsFolder sThresh];
             ContrastPath = [Exp Task '/contrast' sNum];
 
+            %% grab smoothness values, volumes, and cluster sizes/p-values
             cmd = sprintf('cat %s',fullfile(ContrastPath,'smoothness'));
             [status, result] = system(cmd);
             dlh = str2num(result);
@@ -65,6 +70,7 @@ for iThresh = 1:numel(zthreshes)
                 fprintf(1,'error\n');
             end
             
+            %% calculate empirical p-values based on observed null distribution of clusters and FDR correct
             emp_p = zeros(size(emp_c));
             
             load(fullfile(OutputPath,'perms.mat'),'Clusters');
@@ -77,7 +83,7 @@ for iThresh = 1:numel(zthreshes)
             sum(h);
             save(fullfile(OutputPath,'fdr.mat'),'h','crit','adj','emp_c','emp_p','Clusters','-v7.3');
 
-            %crap fwe thresholds
+            %% calculate number of pFWE values meeting FDR 05 correction at various FWE thresholds
             p00001 = [sum(rft_fwe<0.00001) sum(rft_fwe<0.00001)-sum(h(rft_fwe<0.00001))];
             p00005 = [sum(rft_fwe<0.00005) sum(rft_fwe<0.00005)-sum(h(rft_fwe<0.00005))];
             p0001 = [sum(rft_fwe<0.0001) sum(rft_fwe<0.0001)-sum(h(rft_fwe<0.0001))];
@@ -93,46 +99,33 @@ for iThresh = 1:numel(zthreshes)
     end
 end
 
-lastcol = size(output,2);
-for i = 1:size(output,1)
-    if (i==1 || i==16)
-        j = 0;
-    else
-        j = output(i-1,lastcol+1);
-    end
-    if (output(i,5)>output(i,4))
-        output(i,lastcol+1) = output(i,5)-output(i,4) + j;
-    else
-        output(i,lastcol+1) = j;
-    end
-end
-output, output(15,lastcol+1)/sum(output(1:15,5)), output(30,lastcol+1)/sum(output(15:30,5))
-
-
 cdt01 = [
-sum(output(1:15,7))/sum(output(1:15,6)),
-sum(output(1:15,9))/sum(output(1:15,8)),
-sum(output(1:15,11))/sum(output(1:15,10)),
-sum(output(1:15,13))/sum(output(1:15,12)),
-sum(output(1:15,15))/sum(output(1:15,14)),
-sum(output(1:15,17))/sum(output(1:15,16)),
-sum(output(1:15,19))/sum(output(1:15,18)),
+sum(output(1:15,7))/sum(output(1:15,6))
+sum(output(1:15,9))/sum(output(1:15,8))
+sum(output(1:15,11))/sum(output(1:15,10))
+sum(output(1:15,13))/sum(output(1:15,12))
+sum(output(1:15,15))/sum(output(1:15,14))
+sum(output(1:15,17))/sum(output(1:15,16))
+sum(output(1:15,19))/sum(output(1:15,18))
 sum(output(1:15,21))/sum(output(1:15,20))]';
 
 cdt001 = [
-sum(output(16:30,7))/sum(output(16:30,6)),
-sum(output(16:30,9))/sum(output(16:30,8)),
-sum(output(16:30,11))/sum(output(16:30,10)),
-sum(output(16:30,13))/sum(output(16:30,12)),
-sum(output(16:30,15))/sum(output(16:30,14)),
-sum(output(16:30,17))/sum(output(16:30,16)),
-sum(output(16:30,19))/sum(output(16:30,18)),
+sum(output(16:30,7))/sum(output(16:30,6))
+sum(output(16:30,9))/sum(output(16:30,8))
+sum(output(16:30,11))/sum(output(16:30,10))
+sum(output(16:30,13))/sum(output(16:30,12))
+sum(output(16:30,15))/sum(output(16:30,14))
+sum(output(16:30,17))/sum(output(16:30,16))
+sum(output(16:30,19))/sum(output(16:30,18))
 sum(output(16:30,21))/sum(output(16:30,20))]';
 
-
+%% plot percent of pFWE values that are rejected at pFDR 0.05 for both CDT thresholds
 x = -log10([0.00001 0.00005 0.0001 0.0005 0.001 0.005 0.01 0.05]);
 figure;
 plot(x,cdt01,'r-');
 hold on;
 plot(x,cdt001,'b-');
+title('Plot of FDR survival by FWE p-value for CDT 0.01 and 0.001');
+xlabel('-Log10(FWE p-value)');
+ylabel('Percentage of FWE results that survive FDR 0.05');
 hold off;
