@@ -37,12 +37,8 @@ Contrasts = {
     };
 
 Exp = '/net/pepper/Eklund/FDR_perms/';
-
 ResultsFolder = 'perms_3_'; %output folder for permutation results
-
 LoadResults = 1; %load existing perms.mat file to use existing designs if possible
-
-
 
 %% start calculation
 rng(seed); %initialize RNG with seed for reproducible results
@@ -73,7 +69,6 @@ for iTask = 1:numel(Tasks)
             Vf = spm_vol(datafile);
             data = spm_read_vols(Vf);
             
-
             % reshape and mask data
             [dx dy dz n] = size(data);
             dataflat = reshape(data,dx*dy*dz,n)';
@@ -90,7 +85,6 @@ for iTask = 1:numel(Tasks)
             Design = [ones(n,1)];
             
             %% load or generate permuted design matrices (via sign flipping)
-
             if (LoadResults && exist(fullfile(OutputPath,'perms.mat'),'file'))
                 load(fullfile(OutputPath,'perms.mat'),'PermDesign');
             else
