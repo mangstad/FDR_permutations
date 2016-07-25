@@ -7,7 +7,6 @@
 
 %% setting variables
 zthreshes = [2.3 3.1]; %Z thresholds to evaluate
-
 Tasks = {
     'RhymeJudgment';
     'MixedGamblesTask';
@@ -31,11 +30,7 @@ eklsumsr= [1 3 2 0 2     1 5 3 2   6 9 2 4 7 2 10 8 0 0 2     0 10 1 0   9 12 8 
 Exp = '/net/pepper/Eklund/FDR_perms/';
 
 %% start calculation
-ResultsFolder = 'perms_3_';
-
-InputTemplate = '[Exp]/FDR_perms/[Task]/contrast[sNum]/';
-OutputTemplate = '[Exp]/FDR_perms/[Task]/contrast[sNum]/perms_[sThresh]/';
-ContrastTemplate = '[Exp]/FDR_perms/[Task]/contrast[sNum]/';
+ResultsFolder = 'perms_'; %folder to load permutation results from
 
 output = [];
 eklsumscounter = 1;
@@ -68,7 +63,6 @@ for iThresh = 1:numel(zthreshes)
 
             cmd = sprintf('cluster -i %s -t %2.1f -p 1000 --dlh=%.10f --volume=%d | awk ''{print $3}'' | tail -n +2',fullfile(ContrastPath,'zstat1.nii'),zthresh,dlh,vol);
             [status, result] = system(cmd);
-
             rft_fwe = str2num(result);
             
             if (size(emp_c,1)~=size(rft_fwe,1))
