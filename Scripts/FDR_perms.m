@@ -1,7 +1,11 @@
-%make sure SPM is on path
+%SPM needs to be on the path
+%these results were generated using SPM8 (R4667)
 
 %
-% Eklund et al reference
+% Eklund, A., Nichols, T. E., & Knutsson, H. (2016). Cluster failure: Why 
+% fMRI inferences for spatial extent have inflated false-positive rates. 
+% Proceedings of the National Academy of Sciences, 113(28), 7900-7905.
+% http://doi.org/10.1073/pnas.1602413113
 %
 
 %if you do not have access to the parallel computing toolbox, make the
@@ -39,7 +43,7 @@ LoadResults = 1; %load existing perms.mat file to use existing designs if possib
 
 
 
-%% start actual code
+%% start calculation
 rng(seed); %initialize RNG with seed for reproducible results
 
 for iTask = 1:numel(Tasks)
