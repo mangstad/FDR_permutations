@@ -99,6 +99,7 @@ for iThresh = 1:numel(zthreshes)
     end
 end
 
+%% collect percent of FWE p-values that survived FDR 05 at each CDT
 cdt01 = [
 sum(output(1:15,7))/sum(output(1:15,6))
 sum(output(1:15,9))/sum(output(1:15,8))
