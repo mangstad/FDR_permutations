@@ -1,0 +1,1 @@
+/usr/local/fsl/bin/flameo --cope=filtered_func_data --vc=var_filtered_func_data  --mask=mask --ld=stats --dm=design.mat --cs=design.grp --tc=design.con  --runmode=ols
