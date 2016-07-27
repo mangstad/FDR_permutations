@@ -29,7 +29,6 @@ eklsumsr= [1 3 2 0 2     1 5 3 2   6 9 2 4 7 2 10 8 0 0 2     0 10 1 0   9 12 8 
 
 Exp = '/net/pepper/Eklund/FDR_perms/';
 
-%% start calculation
 ResultsFolder = 'perms_'; %folder to load permutation results from
 
 output = [];
@@ -70,7 +69,6 @@ for iThresh = 1:numel(zthreshes)
             end
             
             %% calculate empirical p-values based on observed null distribution of clusters and FDR correct
-
             emp_p = zeros(size(emp_c));
             
             load(fullfile(OutputPath,'perms.mat'),'Clusters');

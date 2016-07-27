@@ -35,14 +35,13 @@ Contrasts = {
     [1 2 3];
     [1 2 3 4 5 6];
     };
-p = 100;
-zthreshes = 3.1
-Tasks = {'RhymeJudgment'};
-Contrasts = {[1]};
 
 Exp = '/net/pepper/Eklund/FDR_perms/';
 ResultsFolder = 'perms_3_'; %output folder for permutation results
+
 LoadResults = 1; %load existing perms.mat file to use existing designs if possible
+
+
 
 %% start calculation
 rng(seed); %initialize RNG with seed for reproducible results
@@ -105,10 +104,10 @@ for iTask = 1:numel(Tasks)
             if (matlabpool('size') == 0)
                 matlabpool('open',cores);
             end
+            
             %change this to for i=1:p if not using parallel computing
             %toolbox
             parfor i = 1:p
-            %for i = 1:p
                 permstats(i) = mc_glm(maskeddataflat,PermDesign(:,i));
                 permstats(i).b = [];
                 permstats(i).res = [];
