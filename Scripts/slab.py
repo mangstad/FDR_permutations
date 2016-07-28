@@ -1,5 +1,6 @@
 import os
 import glob
+import msgpack
 import cPickle as pickle
 import collections
 import numpy as np
@@ -18,17 +19,25 @@ def mkdir_p(path):
         else:
             raise
 
-def LoadPermResults(path,idx):
-    with open(os.path.join(path,'perms.pickle')) as f:
-        data = pickle.load(f)[idx]
+def LoadPermResults(path,name,method,idx):
+    if method=='msgpack':
+        with open(os.path.join(path,name+'.mpac')) as f:
+            data = msgpack.load(f)[idx]
+    else:
+        with open(os.path.join(path,name+'.pickle')) as f:
+            data = pickle.load(f)[idx]
     return data
 
-def SavePermResults(path,*args):
+def SavePermResults(path,name,method,*args):
     data = []
     for thing in enumerate(args):
         data.append(thing)
-    with open(os.path.join(path,'perms.pickle'),'w') as f:
-        pickle.dump(data,f)
+    if method=='msgpack':
+        with open(os.path.join(path,name+'.mpac'),'wb') as f:
+            msgpack.dump(data,f)
+    else:
+        with open(os.path.join(path,name+'.pickle'),'wb') as f:
+            pickle.dump(data,f)
 
 def CalculatePermutation(flatdata, design, mask, thresh, i):
     permflatdata = SimpleGLM(flatdata,design[:,i])[0]
