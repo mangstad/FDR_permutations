@@ -13,10 +13,6 @@ zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
-#zthreshes = [3.1]
-#Tasks = ['RhymeJudgment']
-#Contrasts = [[1]]
-
 Exp = '/net/pepper/Eklund/temp'
 OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms/'
 OutputFolder2 = 'perms_py_'
@@ -58,24 +54,22 @@ for iThresh in xrange(0,len(zthreshes)):
             emp_c = clusterdata[:,1]
             fwe_p = clusterdata[:,2]
 
-            Clusters = slab.LoadPermResults(OutputPath,'perms','msgpack',1)[1]
             os.chdir(cwd)
 
             emp_p = np.zeros(emp_c.shape)
             
-            #sum was super slow here, replaced with len(np.nonzero...
+            pmf = slab.LoadPermResults(OutputPath,'PMF','msgpack',0)[1]
+
+            #now using PMF calculated across perms for a given contrast
             for i in xrange(0,len(emp_c)):
-                #emp_p[i] = 1 - float(sum(emp_c[i] > Clusters))/ len(Clusters)
-                emp_p[i] = 1 - float(len(np.nonzero(emp_c[i]>Clusters)[0]))/len(Clusters)
-            
-            #print(emp_c)
-            #print(emp_p)
-            #print(fwe_p)
+                if (emp_c[i]>len(pmf)):
+                    emp_p[i] = pmf[-1]/np.round(np.sum(pmf))
+                else:
+                    emp_p[i] = np.sum(pmf[int(emp_c[i]):])/np.round(np.sum(pmf))
             
             h, fdr_p = fdr_correction(emp_p,method='indep')
-            #print(fdr_p)
 
-            slab.SavePermResults(OutputPath,'fdr','msgpack',h.tolist(),fdr_p.tolist(),emp_c.tolist(),emp_p.tolist(),Clusters)
+            slab.SavePermResults(OutputPath,'fdr','msgpack',h.tolist(),fdr_p.tolist(),emp_c.tolist(),emp_p.tolist())
 
             p00001 = [sum(fwe_p<0.00001),sum(fwe_p<0.00001)-sum(h[fwe_p<0.00001])]
             p00005 = [sum(fwe_p<0.00005),sum(fwe_p<0.00005)-sum(h[fwe_p<0.00005])]
