@@ -71,48 +71,76 @@ for iThresh in xrange(0,len(zthreshes)):
 
             slab.SavePermResults(OutputPath,'fdr','msgpack',h.tolist(),fdr_p.tolist(),emp_c.tolist(),emp_p.tolist())
 
-            p00001 = [sum(fwe_p<0.00001),sum(fwe_p<0.00001)-sum(h[fwe_p<0.00001])]
-            p00005 = [sum(fwe_p<0.00005),sum(fwe_p<0.00005)-sum(h[fwe_p<0.00005])]
-            p0001 = [sum(fwe_p<0.0001),sum(fwe_p<0.0001)-sum(h[fwe_p<0.0001])]
-            p0005 = [sum(fwe_p<0.0005),sum(fwe_p<0.0005)-sum(h[fwe_p<0.0005])]
-            p001 = [sum(fwe_p<0.001),sum(fwe_p<0.001)-sum(h[fwe_p<0.001])]
-            p005 = [sum(fwe_p<0.005),sum(fwe_p<0.005)-sum(h[fwe_p<0.005])]
-            p01 = [sum(fwe_p<0.01),sum(fwe_p<0.01)-sum(h[fwe_p<0.01])]
-            p05 = [sum(fwe_p<0.05),sum(fwe_p<0.05)-sum(h[fwe_p<0.05])]
-
-            pout = np.concatenate([p00001,p00005,p0001,p0005,p001,p005,p01,p05])
+            ps = []
+            pbins = [0,0.00001,0.0001,0.001,0.01,0.05]
+            for ip in xrange(0,len(pbins)-1):
+                fwe = sum(np.logical_and(fwe_p>pbins[ip],fwe_p<=pbins[ip+1]))
+                ps.append([fwe,sum(h[np.logical_and(fwe_p>pbins[ip],fwe_p<=pbins[ip+1])])])
+                
+            pout = np.concatenate(ps)
             if len(output)==0:
                 output = np.concatenate([np.array([iTask+1,Contrast,zthresh,sum(h),eklsumsr[eklsumscounter]]),pout])
             else:
                 output = np.vstack([output,np.concatenate([np.array([iTask+1,Contrast,zthresh,sum(h),eklsumsr[eklsumscounter]]),pout])])
             eklsumscounter += 1
-            #print(output)
 
-cdt01 = [sum(output[0:14,6])/sum(output[0:14,5]),
+cdt01 = np.array([sum(output[0:14,6])/sum(output[0:14,5]),
          sum(output[0:14,8])/sum(output[0:14,7]),
          sum(output[0:14,10])/sum(output[0:14,9]),
          sum(output[0:14,12])/sum(output[0:14,11]),
-         sum(output[0:14,14])/sum(output[0:14,13]),
-         sum(output[0:14,16])/sum(output[0:14,15]),
-         sum(output[0:14,18])/sum(output[0:14,17]),
-         sum(output[0:14,20])/sum(output[0:14,19])]
+         sum(output[0:14,14])/sum(output[0:14,13])])
 
-cdt001 = [sum(output[15:29,6])/sum(output[15:29,5]),
+cdt001 = np.array([sum(output[15:29,6])/sum(output[15:29,5]),
           sum(output[15:29,8])/sum(output[15:29,7]),
           sum(output[15:29,10])/sum(output[15:29,9]),
           sum(output[15:29,12])/sum(output[15:29,11]),
-          sum(output[15:29,14])/sum(output[15:29,13]),
-          sum(output[15:29,16])/sum(output[15:29,15]),
-          sum(output[15:29,18])/sum(output[15:29,17]),
-          sum(output[15:29,20])/sum(output[15:29,19])]
+          sum(output[15:29,14])/sum(output[15:29,13])])
 
-#%% plot percent of pFWE values that are rejected at pFDR 0.05 for both CDT thresholds
-x = -1*np.log10([0.00001,0.00005,0.0001,0.0005,0.001,0.005,0.01,0.05]);
 
-import pandas as p
-import ggplot
-from ggplot import *
+import prettyplotlib as ppl
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
 
-d = p.DataFrame({'x':x,'y1':cdt01,'y2':cdt001})
-print ggplot(d,aes(x='x')) + geom_line(aes(y='y1'),colour='blue') + geom_line(aes(y='y2'),colour='red')
+x = np.arange(11)+1
+width = 0.70
 
+xticks = ['(0,           \n0.00001]','(0.00001,\n0.0001]','(0.0001,\n0.001]','(0.001,\n0.01]','(0.01,\n0.05]']
+
+cdt01sums = np.sum(output[0:15,5:15],axis=0)
+cdt001sums = np.sum(output[15:30,5:15],axis=0)
+cdt01sumsstr = ['%d' % n for n in cdt01sums]
+cdt001sumsstr = ['%d' % n for n in cdt001sums]
+cdt01annot = [i+'\n'+j+' clusters' for i,j in zip(xticks,cdt01sumsstr[::2])]
+cdt001annot = [i+'\n'+j+' clusters' for i,j in zip(xticks,cdt001sumsstr[::2])]
+
+xlabels = np.concatenate([cdt001annot,np.array(['']),cdt01annot])
+
+#plt.xkcd()
+
+fontAxis = FontProperties()
+fontAxis.set_family('sans-serif')
+fontAxis.set_weight('bold')
+fontLabel = fontAxis.copy()
+fontTitle = fontAxis.copy()
+
+fontTitle.set_size(32)
+fontAxis.set_size(24)
+fontLabel.set_size(14)
+  
+dpi = 96
+plt.figure(figsize=(1920/dpi,1080/dpi),dpi=dpi,facecolor='w')
+ax = plt.gca()
+ax.spines["top"].set_visible(False)     
+ax.spines["right"].set_visible(False)  
+plt.bar(x,100*np.concatenate([cdt001,np.array([0]),cdt01]),width,color=np.concatenate([np.repeat(['#76bf72'],5),np.repeat(['b'],1),np.repeat(['#597dbe'],5)]))
+plt.ylabel('% of Clusters\nSurviving at FDR 0.05',fontproperties=fontAxis)
+plt.xlabel('FWE Corrected P-Value Bins',fontproperties=fontAxis)
+plt.xticks(x + width/2,xlabels,fontproperties=fontLabel)
+plt.yticks(np.arange(0,105,10),fontproperties=fontLabel)
+plt.tick_params(axis="both",which="both",bottom="off",top="off",labelbottom="on",left="on",right="off",labelleft="on")    
+plt.ylim([0,105])
+plt.xlim([0.55,12])
+plt.figtext(0.27,0.91,'CDT 0.001',color='#76bf72',fontproperties=fontTitle)
+plt.figtext(0.68,0.91,'CDT 0.01',color='#597dbe',fontproperties=fontTitle)
+plt.savefig('foo.png', bbox_inches='tight',dpi=dpi,orientation='portrait',papertype='letter')
+plt.show()

@@ -8,17 +8,17 @@ from scipy import stats
 import multiprocessing
 from functools import partial
 
-p = 1000
-cores = 1
+p = 5000
+cores = 3
 seed = 1234
 
 zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
-zthreshes = [3.1]
-Tasks = ['RhymeJudgment']
-Contrasts = [[1]]
+#zthreshes = [3.1]
+#Tasks = ['RhymeJudgment']
+#Contrasts = [[1]]
 
 Exp = '/net/pepper/Eklund/temp'
 ResultsFolder = 'Contrasts'
@@ -33,14 +33,15 @@ for iTask in xrange(0,len(Tasks)):
     for iContrast in xrange(0,len(Contrasts[iTask])):
         for iThresh in xrange(0,len(zthreshes)):
             Task = Tasks[iTask]
+            Contrast = Contrasts[iTask][iContrast]
             zthresh = zthreshes[iThresh]
-            OutputPath = os.path.join(OutputFolder1,Task,'contrast'+str(iContrast+1),OutputFolder2+str(zthresh))
+            OutputPath = os.path.join(OutputFolder1,Task,'contrast'+str(Contrast),OutputFolder2+str(zthresh))
             print(OutputPath)
 
             InputPath = os.path.join(Exp,Task,ResultsFolder)
             print(InputPath)
-            data = slab.LoadImageList(InputPath,'contrast'+str(iContrast+1)+'_0*.nii.gz')[0]
-            mask = slab.LoadImageList(InputPath,'contrast'+str(iContrast+1)+'_mask.nii.gz')[0]
+            data = slab.LoadImageList(InputPath,'contrast'+str(Contrast)+'_0*.nii.gz')[0]
+            mask = slab.LoadImageList(InputPath,'contrast'+str(Contrast)+'_mask.nii.gz')[0]
             n = data.shape[3]
             #reshape data & mask
 
@@ -50,7 +51,7 @@ for iTask in xrange(0,len(Tasks)):
 
             #if loadresults
             if LoadResults==1:
-                PermDesign = slab.LoadPermResults(OutputPath,2)
+                PermDesign = np.asmatrix(slab.LoadPermResults(OutputPath,'perms','msgpack',2)[1])
             else:
                 PermDesign = np.matrix(np.sign(np.random.rand(n,p)-0.5))
             
@@ -64,8 +65,8 @@ for iTask in xrange(0,len(Tasks)):
             pool.join()
 
             Clusters = sorted(list(slab.flatten(PermClusters)))
-            print(Clusters)
+            #print(Clusters)
 
             #save output
             slab.mkdir_p(OutputPath)
-            slab.SavePermResults(OutputPath,PermClusters,Clusters,PermDesign,zthresh,tthresh,n,p)
+            slab.SavePermResults(OutputPath,'perms','msgpack',PermClusters,Clusters,PermDesign.tolist(),zthresh,tthresh,n,p)
