@@ -21,15 +21,19 @@ Contrasts = {
     [1 2 3 4 5 6];
     };
 
+zthreshes = [3.1];
+Tasks = {'RhymeJudgment'};
+Contrasts = {[1]};
+
 idx.con = [1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 5 6  1 2 3 4 1 2 3 4  1 2 3 4 1  2 3  4 5  6];
 idx.tas = [1 1 1 1 2 2 2 2 3 3 3 3 4 4 4 4 4 4  1 1 1 1 2 2 2 2  3 3 3 3 4  4 4  4 4  4];
 idx.thr = [1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1  2 2 2 2 2 2 2 2  2 2 2 2 2  2 2  2 2  2];
 eklsums = [1 3 2 0 2 0 0 1 5 3 2 0 6 9 2 4 7 2 10 8 0 0 2 0 0 0 10 1 0 0 9 12 8 11 6 12];
 eklsumsr= [1 3 2 0 2     1 5 3 2   6 9 2 4 7 2 10 8 0 0 2     0 10 1 0   9 12 8 11 6 12];
 
-Exp = '/net/pepper/Eklund/FDR_perms/';
+Exp = '/net/pepper/Eklund/';
 
-ResultsFolder = 'perms_'; %folder to load permutation results from
+ResultsFolder = 'perms_3_'; %folder to load permutation results from
 
 output = [];
 eklsumscounter = 1;
@@ -45,8 +49,8 @@ for iThresh = 1:numel(zthreshes)
             
             fprintf(1,'Task: %s, Contrast: %d, Threshold: %2.1f\n',Task,iContrast,zthresh);
 
-            OutputPath = [Exp Task '/contrast' sNum '/' ResultsFolder sThresh];
-            ContrastPath = [Exp Task '/contrast' sNum];
+            OutputPath = [Exp 'FDR_perms/' Task '/contrast' sNum '/' ResultsFolder sThresh];
+            ContrastPath = [Exp 'FDR_perms/' Task '/contrast' sNum];
 
             %% grab smoothness values, volumes, and cluster sizes/p-values
             cmd = sprintf('cat %s',fullfile(ContrastPath,'smoothness'));
