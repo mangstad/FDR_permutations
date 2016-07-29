@@ -16,13 +16,15 @@ zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
-#zthreshes = [3.1]
-#Tasks = ['RhymeJudgment']
-#Contrasts = [[1]]
+zthreshes = [2.3]
+Tasks = ['RhymeJudgment']
+Contrasts = [[1]]
 
 Exp = '/net/pepper/Eklund/temp'
+Exp = '../Data'
 ResultsFolder = 'Contrasts'
 OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms/'
+OutputFolder1 = '../Results/'
 OutputFolder2 = 'perms_py_'
 
 LoadResults = 0
@@ -36,25 +38,25 @@ for iTask in xrange(0,len(Tasks)):
             Contrast = Contrasts[iTask][iContrast]
             zthresh = zthreshes[iThresh]
             OutputPath = os.path.join(OutputFolder1,Task,'contrast'+str(Contrast),OutputFolder2+str(zthresh))
-            print(OutputPath)
+            print('Working on '+OutputPath)
 
             InputPath = os.path.join(Exp,Task,ResultsFolder)
-            print(InputPath)
             data = slab.LoadImageList(InputPath,'contrast'+str(Contrast)+'_0*.nii.gz')[0]
             mask = slab.LoadImageList(InputPath,'contrast'+str(Contrast)+'_mask.nii.gz')[0]
             n = data.shape[3]
-            #reshape data & mask
 
+            #reshape data & mask
             flatdata = slab.FlattenandMask(data,mask)
             
             tthresh = stats.t.ppf(stats.norm.cdf(zthresh),n-1)
 
-            #if loadresults
+            #if you are loading existing PermDesign
             if LoadResults==1:
                 PermDesign = np.asmatrix(slab.LoadPermResults(OutputPath,'perms','msgpack',2)[1])
             else:
                 PermDesign = np.matrix(np.sign(np.random.rand(n,p)-0.5))
             
+            #calculate permutations distributing over cores
             PermClusters = []
 
             perms = xrange(0,p)
@@ -64,8 +66,8 @@ for iTask in xrange(0,len(Tasks)):
             pool.close()
             pool.join()
 
+            #save a flattened version of all discovered clusters as well
             Clusters = sorted(list(slab.flatten(PermClusters)))
-            #print(Clusters)
 
             #save output
             slab.mkdir_p(OutputPath)

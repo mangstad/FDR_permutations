@@ -7,8 +7,9 @@ import numpy as np
 zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
-Exp = '/net/pepper/Eklund/temp'
-OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms/'
+
+Exp = '../Data/'
+OutputFolder1 = '../Results/'
 OutputFolder2 = 'perms_py_'
 
 for iThresh in xrange(0,len(zthreshes)):
@@ -21,7 +22,7 @@ for iThresh in xrange(0,len(zthreshes)):
             print(OutputPath)
 
             PermClusters = slab.LoadPermResults(OutputPath,'perms','msgpack',0)[1]
-            
+
             max = np.max(list(slab.flatten(PermClusters)))
             pmf = np.zeros(max+1)
             

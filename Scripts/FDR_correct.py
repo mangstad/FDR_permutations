@@ -13,8 +13,8 @@ zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
-Exp = '/net/pepper/Eklund/temp'
-OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms/'
+Exp = '../Data/'
+OutputFolder1 = '../Results/'
 OutputFolder2 = 'perms_py_'
 StatsFolder1 = 'Group/'
 StatsFolder2 = 'stats'
@@ -35,11 +35,13 @@ for iThresh in xrange(0,len(zthreshes)):
             StatsPath = os.path.join(Exp,Task,StatsFolder1,'cope'+str(Contrast)+'.feat',StatsFolder2)
             print(StatsPath)
 
-            #read smoothness file parse for DLH value
+            #read smoothness file parse for DLH value and volume
             smoothdata = np.genfromtxt(os.path.join(StatsPath,'smoothness'))
             dlh = smoothdata[0,1]
             vol = int(smoothdata[1,1])
             
+            #cd to directory and run FSL cluster on image to get cluster
+            #exents and FWE p-values
             cwd = os.getcwd()
             os.chdir(StatsPath)
             cl = Cluster()
@@ -51,26 +53,32 @@ for iThresh in xrange(0,len(zthreshes)):
             cl.inputs.terminal_output = 'file'
             c = cl.run()
             clusterdata = np.genfromtxt(os.path.join(StatsPath,'stdout.nipype'),skip_header=1)
+            #observed cluster sizes
             emp_c = clusterdata[:,1]
+            #RFT FWE corrected p-values
             fwe_p = clusterdata[:,2]
 
             os.chdir(cwd)
 
             emp_p = np.zeros(emp_c.shape)
             
+            #using PMF calculated across perms for a given contrast
+            #calculated in CombinePMF.py
             pmf = slab.LoadPermResults(OutputPath,'PMF','msgpack',0)[1]
-
-            #now using PMF calculated across perms for a given contrast
             for i in xrange(0,len(emp_c)):
                 if (emp_c[i]>len(pmf)):
                     emp_p[i] = pmf[-1]/np.round(np.sum(pmf))
                 else:
                     emp_p[i] = np.sum(pmf[int(emp_c[i]):])/np.round(np.sum(pmf))
-            
+
+            #FDR correct
             h, fdr_p = fdr_correction(emp_p,method='indep')
 
             slab.SavePermResults(OutputPath,'fdr','msgpack',h.tolist(),fdr_p.tolist(),emp_c.tolist(),emp_p.tolist())
-
+            
+            #messy output stuff
+            #select p-value bins, and concatenate rows of FWE
+            #clusters and which are FDR clusters
             ps = []
             pbins = [0,0.00001,0.0001,0.001,0.01,0.05]
             for ip in xrange(0,len(pbins)-1):
@@ -84,20 +92,21 @@ for iThresh in xrange(0,len(zthreshes)):
                 output = np.vstack([output,np.concatenate([np.array([iTask+1,Contrast,zthresh,sum(h),eklsumsr[eklsumscounter]]),pout])])
             eklsumscounter += 1
 
+#cluster survival ratios for CDT 0.01
 cdt01 = np.array([sum(output[0:14,6])/sum(output[0:14,5]),
          sum(output[0:14,8])/sum(output[0:14,7]),
          sum(output[0:14,10])/sum(output[0:14,9]),
          sum(output[0:14,12])/sum(output[0:14,11]),
          sum(output[0:14,14])/sum(output[0:14,13])])
 
+#cluster survival ratios for CDT 0.001
 cdt001 = np.array([sum(output[15:29,6])/sum(output[15:29,5]),
           sum(output[15:29,8])/sum(output[15:29,7]),
           sum(output[15:29,10])/sum(output[15:29,9]),
           sum(output[15:29,12])/sum(output[15:29,11]),
           sum(output[15:29,14])/sum(output[15:29,13])])
 
-
-import prettyplotlib as ppl
+#make a nice plot
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
 
