@@ -14,7 +14,9 @@ Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
 Exp = '../Data/'
+Exp = '/net/pepper/Eklund/temp/'
 OutputFolder1 = '../Results/'
+OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms'
 OutputFolder2 = 'perms_py_'
 StatsFolder1 = 'Group/'
 StatsFolder2 = 'stats'
@@ -43,7 +45,7 @@ for iThresh in xrange(0,len(zthreshes)):
             #cd to directory and run FSL cluster on image to get cluster
             #exents and FWE p-values
             cwd = os.getcwd()
-            os.chdir(StatsPath)
+            os.chdir(OutputPath)
             cl = Cluster()
             cl.inputs.threshold = zthresh
             cl.inputs.in_file = os.path.join(StatsPath,'zstat1.nii.gz')
@@ -52,7 +54,7 @@ for iThresh in xrange(0,len(zthreshes)):
             cl.inputs.pthreshold = 1000
             cl.inputs.terminal_output = 'file'
             c = cl.run()
-            clusterdata = np.genfromtxt(os.path.join(StatsPath,'stdout.nipype'),skip_header=1)
+            clusterdata = np.genfromtxt(os.path.join(OutputPath,'stdout.nipype'),skip_header=1)
             #observed cluster sizes
             emp_c = clusterdata[:,1]
             #RFT FWE corrected p-values
@@ -114,6 +116,7 @@ x = np.arange(11)+1
 width = 0.70
 
 xticks = ['(0,           \n0.00001]','(0.00001,\n0.0001]','(0.0001,\n0.001]','(0.001,\n0.01]','(0.01,\n0.05]']
+xticks = ['.00001','.0001','.001','.01','.05']
 
 cdt01sums = np.sum(output[0:15,5:15],axis=0)
 cdt001sums = np.sum(output[15:30,5:15],axis=0)
@@ -123,6 +126,7 @@ cdt01annot = [i+'\n'+j+' clusters' for i,j in zip(xticks,cdt01sumsstr[::2])]
 cdt001annot = [i+'\n'+j+' clusters' for i,j in zip(xticks,cdt001sumsstr[::2])]
 
 xlabels = np.concatenate([cdt001annot,np.array(['']),cdt01annot])
+xlabels = np.concatenate([xticks,np.array(['']),xticks])
 
 #plt.xkcd()
 
@@ -132,9 +136,9 @@ fontAxis.set_weight('bold')
 fontLabel = fontAxis.copy()
 fontTitle = fontAxis.copy()
 
-fontTitle.set_size(32)
-fontAxis.set_size(24)
-fontLabel.set_size(14)
+fontTitle.set_size(48)
+fontAxis.set_size(38)
+fontLabel.set_size(28)
   
 dpi = 96
 plt.figure(figsize=(1920/dpi,1080/dpi),dpi=dpi,facecolor='w')
@@ -144,12 +148,12 @@ ax.spines["right"].set_visible(False)
 plt.bar(x,100*np.concatenate([cdt001,np.array([0]),cdt01]),width,color=np.concatenate([np.repeat(['#76bf72'],5),np.repeat(['b'],1),np.repeat(['#597dbe'],5)]))
 plt.ylabel('% of Clusters\nSurviving at FDR 0.05',fontproperties=fontAxis)
 plt.xlabel('FWE Corrected P-Value Bins',fontproperties=fontAxis)
-plt.xticks(x + width/2,xlabels,fontproperties=fontLabel)
-plt.yticks(np.arange(0,105,10),fontproperties=fontLabel)
+plt.xticks(x + width/4,xlabels,fontproperties=fontLabel,rotation=55)
+plt.yticks(np.arange(0,105,20),fontproperties=fontLabel)
 plt.tick_params(axis="both",which="both",bottom="off",top="off",labelbottom="on",left="on",right="off",labelleft="on")    
 plt.ylim([0,105])
 plt.xlim([0.55,12])
-plt.figtext(0.27,0.91,'CDT 0.001',color='#76bf72',fontproperties=fontTitle)
-plt.figtext(0.68,0.91,'CDT 0.01',color='#597dbe',fontproperties=fontTitle)
+plt.figtext(0.27,0.91,'CDT .001',color='#76bf72',fontproperties=fontTitle)
+plt.figtext(0.68,0.91,'CDT .01',color='#597dbe',fontproperties=fontTitle)
 plt.savefig('foo.png', bbox_inches='tight',dpi=dpi,orientation='portrait',papertype='letter')
 plt.show()
