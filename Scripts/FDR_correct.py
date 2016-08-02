@@ -3,7 +3,6 @@
 import os
 import slab
 import numpy as np
-import scipy as sp
 import nipype as npy
 import mne
 from mne.stats import fdr_correction
@@ -14,16 +13,17 @@ Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
 Exp = '../Data/'
-Exp = '/net/pepper/Eklund/temp/'
 OutputFolder1 = '../Results/'
-OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms'
-OutputFolder2 = 'perms_py_'
+OutputFolder2 = 'perms_py_1980_'
 StatsFolder1 = 'Group/'
 StatsFolder2 = 'stats'
 
 output = []
 eklsumscounter = 0
 eklsumsr= [1,3,2,0,2,1,5,3,2,6,9,2,4,7,2,10,8,0,0,2,0,10,1,0,9,12,8,11,6,12];
+
+all_fdr=[]
+all_fwe=[]
 
 for iThresh in xrange(0,len(zthreshes)):
     for iTask in xrange(0,len(Tasks)):
@@ -32,10 +32,10 @@ for iThresh in xrange(0,len(zthreshes)):
             Contrast = Contrasts[iTask][iContrast]
             zthresh = zthreshes[iThresh]
             OutputPath = os.path.join(OutputFolder1,Task,'contrast'+str(Contrast),OutputFolder2+str(zthresh))
-            print(OutputPath)
+            #print(OutputPath)
 
             StatsPath = os.path.join(Exp,Task,StatsFolder1,'cope'+str(Contrast)+'.feat',StatsFolder2)
-            print(StatsPath)
+            print('Now working on '+StatsPath)
 
             #read smoothness file parse for DLH value and volume
             smoothdata = np.genfromtxt(os.path.join(StatsPath,'smoothness'))
@@ -48,13 +48,13 @@ for iThresh in xrange(0,len(zthreshes)):
             os.chdir(OutputPath)
             cl = Cluster()
             cl.inputs.threshold = zthresh
-            cl.inputs.in_file = os.path.join(StatsPath,'zstat1.nii.gz')
+            cl.inputs.in_file = os.path.join(cwd,StatsPath,'zstat1.nii.gz')
             cl.inputs.dlh = dlh
             cl.inputs.volume = vol
             cl.inputs.pthreshold = 1000
             cl.inputs.terminal_output = 'file'
             c = cl.run()
-            clusterdata = np.genfromtxt(os.path.join(OutputPath,'stdout.nipype'),skip_header=1)
+            clusterdata = np.genfromtxt(os.path.join(cwd,OutputPath,'stdout.nipype'),skip_header=1)
             #observed cluster sizes
             emp_c = clusterdata[:,1]
             #RFT FWE corrected p-values
@@ -82,10 +82,14 @@ for iThresh in xrange(0,len(zthreshes)):
             #select p-value bins, and concatenate rows of FWE
             #clusters and which are FDR clusters
             ps = []
-            pbins = [0,0.00001,0.0001,0.001,0.01,0.05]
+            pbins = [-0.1,0.00001,0.0001,0.001,0.01,0.05]
             for ip in xrange(0,len(pbins)-1):
                 fwe = sum(np.logical_and(fwe_p>pbins[ip],fwe_p<=pbins[ip+1]))
+                temp = sum(fwe_p<=0.05)
                 ps.append([fwe,sum(h[np.logical_and(fwe_p>pbins[ip],fwe_p<=pbins[ip+1])])])
+
+            all_fdr.append(fdr_p)
+            all_fwe.append(fwe_p)
                 
             pout = np.concatenate(ps)
             if len(output)==0:
@@ -111,49 +115,115 @@ cdt001 = np.array([sum(output[15:29,6])/sum(output[15:29,5]),
 #make a nice plot
 import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
+import matplotlib.patches as patches
 
-x = np.arange(11)+1
-width = 0.70
-
-xticks = ['(0,           \n0.00001]','(0.00001,\n0.0001]','(0.0001,\n0.001]','(0.001,\n0.01]','(0.01,\n0.05]']
-xticks = ['.00001','.0001','.001','.01','.05']
-
-cdt01sums = np.sum(output[0:15,5:15],axis=0)
-cdt001sums = np.sum(output[15:30,5:15],axis=0)
-cdt01sumsstr = ['%d' % n for n in cdt01sums]
-cdt001sumsstr = ['%d' % n for n in cdt001sums]
-cdt01annot = [i+'\n'+j+' clusters' for i,j in zip(xticks,cdt01sumsstr[::2])]
-cdt001annot = [i+'\n'+j+' clusters' for i,j in zip(xticks,cdt001sumsstr[::2])]
-
-xlabels = np.concatenate([cdt001annot,np.array(['']),cdt01annot])
-xlabels = np.concatenate([xticks,np.array(['']),xticks])
-
-#plt.xkcd()
 
 fontAxis = FontProperties()
 fontAxis.set_family('sans-serif')
 fontAxis.set_weight('bold')
 fontLabel = fontAxis.copy()
 fontTitle = fontAxis.copy()
+fontInset = fontAxis.copy()
 
 fontTitle.set_size(48)
 fontAxis.set_size(38)
 fontLabel.set_size(28)
-  
+fontInset.set_size(20)
+
+
+cdt01fdr = np.array(list(slab.flatten(all_fdr[0:15])))
+cdt01fwe = np.array(list(slab.flatten(all_fwe[0:15])))
+cdt001fdr = np.array(list(slab.flatten(all_fdr[15:30])))
+cdt001fwe = np.array(list(slab.flatten(all_fwe[15:30])))
+
+cdt01fwe[cdt01fwe==0] = min(cdt01fwe[cdt01fwe>0])
+cdt001fwe[cdt001fwe==0] = min(cdt001fwe[cdt001fwe>0])
+
+cdt01fdr = cdt01fdr[cdt01fwe<0.05]
+cdt01fwe = cdt01fwe[cdt01fwe<0.05]
+cdt001fdr = cdt001fdr[cdt001fwe<0.05]
+cdt001fwe = cdt001fwe[cdt001fwe<0.05]
+
+def get_colors(inp,colormap,vmin=None,vmax=None):
+	norm = plt.Normalize(vmin,vmax)
+	return colormap(norm(inp))
+
+passfdr01 = cdt01fdr<0.05
+passfdr001 = cdt001fdr<0.05
+color01 = get_colors(passfdr01,plt.cm.winter)
+color001 = get_colors(passfdr001,plt.cm.winter)
+
+
+fontAxis = FontProperties()
+fontAxis.set_family('sans-serif')
+fontAxis.set_weight('bold')
+fontLabel = fontAxis.copy()
+fontTitle = fontAxis.copy()
+fontInset = fontAxis.copy()
+
+fontTitle.set_size(48)
+fontAxis.set_size(38)
+fontLabel.set_size(28)
+fontInset.set_size(20)
+
+xticklabels = ['0','','10','','20','','30','','40','','50']
+
 dpi = 96
-plt.figure(figsize=(1920/dpi,1080/dpi),dpi=dpi,facecolor='w')
+plt.figure(figsize=(1920/dpi,2160/dpi),dpi=dpi,facecolor='w')
+
+plt.subplot(211)
 ax = plt.gca()
-ax.spines["top"].set_visible(False)     
-ax.spines["right"].set_visible(False)  
-plt.bar(x,100*np.concatenate([cdt001,np.array([0]),cdt01]),width,color=np.concatenate([np.repeat(['#76bf72'],5),np.repeat(['b'],1),np.repeat(['#597dbe'],5)]))
-plt.ylabel('% of Clusters\nSurviving at FDR 0.05',fontproperties=fontAxis)
-plt.xlabel('FWE Corrected P-Value Bins',fontproperties=fontAxis)
-plt.xticks(x + width/4,xlabels,fontproperties=fontLabel,rotation=55)
-plt.yticks(np.arange(0,105,20),fontproperties=fontLabel)
-plt.tick_params(axis="both",which="both",bottom="off",top="off",labelbottom="on",left="on",right="off",labelleft="on")    
-plt.ylim([0,105])
-plt.xlim([0.55,12])
-plt.figtext(0.27,0.91,'CDT .001',color='#76bf72',fontproperties=fontTitle)
-plt.figtext(0.68,0.91,'CDT .01',color='#597dbe',fontproperties=fontTitle)
-plt.savefig('foo.png', bbox_inches='tight',dpi=dpi,orientation='portrait',papertype='letter')
-plt.show()
+ax.spines["top"].set_visible(False)	 
+ax.spines["right"].set_visible(False)
+plt.setp(ax.spines.values(),linewidth=5)
+ax.yaxis.set_tick_params(width=5,length=10)
+ax.xaxis.set_tick_params(width=5,length=10)
+pfdrtext1 = '$p_{_{FDR}}\leq0.05$'
+pfdrtext2 = '$p_{_{FDR}}>0.05$'
+ax.text(15,-1*np.log10(0.05)+0.3,r''+pfdrtext1,fontproperties=fontTitle,color='#597dbe')
+ax.text(15,-1*np.log10(0.05)-0.5,r''+pfdrtext2,fontproperties=fontTitle,color='#fe7d59')
+plt.scatter(-1*np.log10(cdt001fwe[cdt001fdr<0.05]),-1*np.log10(cdt001fdr[cdt001fdr<0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#597dbe')
+plt.scatter(-1*np.log10(cdt001fwe[cdt001fdr>0.05]),-1*np.log10(cdt001fdr[cdt001fdr>0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#fe7d59')
+ax.add_patch(patches.Rectangle((0,-1*np.log10(0.05)),50,5-(-1*np.log10(0.05)),edgecolor=None,facecolor='#597dbe',alpha=0.1))
+ax.add_patch(patches.Rectangle((0,0),50,-1*np.log10(0.05),edgecolor=None,facecolor='#fe7d59',alpha=0.1))
+plt.ylabel('Clusterwise FDR Corrected P-Value\n'+r'$-log_{10}(p_{_{FDR}})$'+'\n',fontproperties=fontAxis,horizontalalignment='center')
+#plt.xlabel('Clusterwise RFT FWE\nCorrected P-Value\n'+r'$-log_{10}(p_{_{RFT-FWE}})$',fontproperties=fontAxis)
+plt.xticks(np.arange(0,51,5),xticklabels,fontproperties=fontLabel)
+plt.yticks(np.arange(0,6,1),fontproperties=fontLabel)
+plt.tick_params(axis="both",which="both",bottom="on",top="off",labelbottom="on",left="on",right="off",labelleft="on")	
+plt.ylim([0,5])
+plt.xlim([0,50])
+plt.title('CDT .001',fontproperties=fontTitle)
+ax.annotate('smaller p-values',xy=(45,.25),xytext=(25,.25),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,verticalalignment='center')
+ax.get_yaxis().set_label_coords(0,0)
+
+plt.subplot(212)
+ax = plt.gca()
+ax.spines["top"].set_visible(False)	 
+ax.spines["right"].set_visible(False)
+plt.setp(ax.spines.values(),linewidth=5)
+ax.yaxis.set_tick_params(width=5,length=10)
+ax.xaxis.set_tick_params(width=5,length=10)
+ax.annotate('p=.05',xy=(-1*np.log10(0.05),0),xytext=(-1*np.log10(0.05),-0.5),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,horizontalalignment='right')
+ax.annotate('p=.001',xy=(-1*np.log10(0.001),0),xytext=(-1*np.log10(0.001),-0.7),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,horizontalalignment='right')
+ax.annotate('p=.00001',xy=(-1*np.log10(0.00001),0),xytext=(-1*np.log10(0.00001),-0.9),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,horizontalalignment='right')
+pfdrtext1 = '$p_{_{FDR}}\leq.05$'
+pfdrtext2 = '$p_{_{FDR}}>.05$'
+ax.text(15,-1*np.log10(0.05)+0.3,r''+pfdrtext1,fontproperties=fontTitle,color='#597dbe')
+ax.text(15,-1*np.log10(0.05)-0.5,r''+pfdrtext2,fontproperties=fontTitle,color='#fe7d59')
+plt.scatter(-1*np.log10(cdt01fwe[cdt01fdr<0.05]),-1*np.log10(cdt01fdr[cdt01fdr<0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#597dbe')
+plt.scatter(-1*np.log10(cdt01fwe[cdt01fdr>0.05]),-1*np.log10(cdt01fdr[cdt01fdr>0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#fe7d59')
+ax.add_patch(patches.Rectangle((0,-1*np.log10(0.05)),50,5-(-1*np.log10(0.05)),edgecolor=None,facecolor='#597dbe',alpha=0.1))
+ax.add_patch(patches.Rectangle((0,0),50,-1*np.log10(0.05),edgecolor=None,facecolor='#fe7d59',alpha=0.1))
+#plt.ylabel('Clusterwise FDR\nCorrected P-Value\n'+r'$-log_{10}(p_{_{FDR}})$',fontproperties=fontAxis)
+plt.xlabel('Clusterwise RFT-FWE\nCorrected P-Value\n'+r'$-log_{10}(p_{_{RFT-FWE}})$',fontproperties=fontAxis)
+plt.xticks(np.arange(0,51,5),xticklabels,fontproperties=fontLabel)
+plt.yticks(np.arange(0,6,1),fontproperties=fontLabel)
+plt.tick_params(axis="both",which="both",bottom="on",top="off",labelbottom="on",left="on",right="off",labelleft="on")	
+plt.ylim([0,5])
+plt.xlim([0,50])
+plt.title('CDT .01',fontproperties=fontTitle)
+ax.annotate('smaller p-values',xy=(45,.25),xytext=(25,.25),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,verticalalignment='center')
+
+
+plt.savefig(os.path.join(OutputFolder1,'FDR_surviving_clusters.png'), bbox_inches='tight',dpi=dpi,orientation='portrait',papertype='letter')

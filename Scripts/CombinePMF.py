@@ -10,7 +10,7 @@ Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
 Exp = '../Data/'
 OutputFolder1 = '../Results/'
-OutputFolder2 = 'perms_py_'
+OutputFolder2 = 'perms_py_1980_'
 
 for iThresh in xrange(0,len(zthreshes)):
     for iTask in xrange(0,len(Tasks)):
@@ -19,7 +19,7 @@ for iThresh in xrange(0,len(zthreshes)):
             Contrast = Contrasts[iTask][iContrast]
             zthresh = zthreshes[iThresh]
             OutputPath = os.path.join(OutputFolder1,Task,'contrast'+str(Contrast),OutputFolder2+str(zthresh))
-            print(OutputPath)
+            print('Working on '+OutputPath)
 
             PermClusters = slab.LoadPermResults(OutputPath,'perms','msgpack',0)[1]
 

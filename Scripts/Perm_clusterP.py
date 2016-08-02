@@ -10,22 +10,16 @@ from functools import partial
 
 p = 5000
 cores = 3
-seed = 1234
+seed = 1980
 
 zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
 Contrasts = [[1,2,3,4],[1,4],[1,2,3],[1,2,3,4,5,6]]
 
-zthreshes = [2.3]
-Tasks = ['RhymeJudgment']
-Contrasts = [[1]]
-
-Exp = '/net/pepper/Eklund/temp'
 Exp = '../Data'
 ResultsFolder = 'Contrasts'
-OutputFolder1 = '/net/pepper/Eklund/temp/FDR_perms/'
 OutputFolder1 = '../Results/'
-OutputFolder2 = 'perms_py_'
+OutputFolder2 = 'perms_py_1980_'
 
 LoadResults = 0
 
@@ -60,6 +54,9 @@ for iTask in xrange(0,len(Tasks)):
             PermClusters = []
 
             perms = xrange(0,p)
+            #for i in perms:
+            #    PermClusters.append(slab.CalculateSinglePermutation(flatdata,PermDesign[:,i],mask,tthresh))
+            
             pool = multiprocessing.Pool(cores)
             PartialCalculatePermutation = partial(slab.CalculatePermutation,flatdata,PermDesign,mask,tthresh)
             PermClusters = pool.map(PartialCalculatePermutation, perms)

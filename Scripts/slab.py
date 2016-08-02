@@ -46,6 +46,13 @@ def CalculatePermutation(flatdata, design, mask, thresh, i):
     unique, counts = np.unique(cci,return_counts=True)
     return sorted(counts[1:])
 
+def CalculateSinglePermutation(flatdata,design,mask,thresh):
+    permflatdata = SimpleGLM(flatdata,design)[0]
+    permdata = UnflattenandUnmask(permflatdata,mask)
+    cci = ClusterizeImage(permdata,thresh)
+    unique, counts = np.unique(cci,return_counts=True)
+    return sorted(counts[1:])
+
 def flatten(l):
     for el in l:
         if isinstance(el,collections.Iterable) and not isinstance(el,basestring):
@@ -106,14 +113,14 @@ def SimpleGLM(Y,X=None):
     nPred = X.shape[1]
     Y = np.matrix(Y)
     X = np.matrix(X)
-    b = np.array((X.T*X).I*X.T*Y)
-    pred = np.array(X*b)
-    res = np.array(Y-pred)
+    b = (X.T*X).I*X.T*Y
+    pred = X*b
+    res = Y-pred
     C = (X.T*X).I
     xvar_inv = np.diag(C)
     xvar_inv = np.tile(xvar_inv,(1,nFeat))
-    sse = np.sum(res**2,axis=0)/(nSub-nPred)
-    bSE = np.sqrt(xvar_inv * sse)
+    sse = np.sum(np.multiply(res,res),axis=0)/(nSub-nPred)
+    bSE = np.sqrt(np.multiply(xvar_inv,sse))
     t = b / bSE
     return t,b,pred,res
 
