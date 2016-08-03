@@ -6,9 +6,15 @@ import collections
 import numpy as np
 import scipy as sp
 import nibabel as nib
+import matplotlib.pyplot as plt
 from scipy import stats
 from scipy.ndimage import label, generate_binary_structure
 import errno
+
+
+def get_colors(inp,colormap,vmin=None,vmax=None):
+	norm = plt.Normalize(vmin,vmax)
+	return colormap(norm(inp))
 
 def mkdir_p(path):
     try:
