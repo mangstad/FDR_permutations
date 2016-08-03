@@ -1,0 +1,114 @@
+% Created 2016-07-29 Fri 14:38
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\author{Daniel Kessler, Michael Angstadt, Chandra Sripada}
+\date{\today}
+\title{Extended Methods}
+\hypersetup{
+ pdfauthor={Daniel Kessler, Michael Angstadt, Chandra Sripada},
+ pdftitle={Extended Methods},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 24.3.1 (Org mode 8.3.5)}, 
+ pdflang={English}}
+ 
+\newcommand{\subtext}[2]{
+#1_{_{\text{#2}}}
+}
+ 
+\begin{document}
+
+\maketitle
+%\tableofcontents
+
+\section{Data \& Code}
+This document, along with source code and data for all analyses, is available at \url{http://github.com/mangstad/FDR_permutations}. 
+Anders Eklund graciously shared with us the per-participant "first-level" maps as well as group-level results for each contrast analyzed as part of their study  \cite{eklund16}. These contrasts were in turn derived from two studies \cite{duncan_consistency_2009,tom_neural_2007}, which were available at openfMRI \cite{poldrack_toward_2013}. 
+
+%All data was originally obtained from openfMRI \cite{poldrack_toward_2013}, which served as repository for two original studies \cite{duncan_consistency_2009,tom_neural_2007}. 
+%Anders Eklund graciously shared with us the per-participant "first-level" maps for each contrast from each study as well as group-level results \cite{eklund16}. This document, along with source code and data for all analyses, is available at \url{http://github.com/mangstad/FDR_permutations}.
+
+\section{Overview}
+We consider each contrast from each study separately and perform the following steps. 
+In order to generate a realization of the null, we randomly flip the sign of each participant's contrast map, conduct a voxelwise, one-sample t-test across participants, apply a cluster defining threshold (CDT) of \{.001,.01\}, and then record the voxel extents of all clusters that emerge (identified as connected components using the FSL-standard 26-degree connectivity criteria that considers voxels connected if they share any face, edge, or vertex). 
+We repeat this procedure 5,000 times to obtain an empirical mass function of cluster sizes under the null. 
+To obtain a per-cluster uncorrected \textit{p}-value, we compare the extent for each cluster that arises from the unflipped design to the contrast's null distribution. 
+Finally, we submit the vector of uncorrected \textit{p}-values to an FDR procedure \cite{fdr} with $\alpha = .05$.
+
+\section{Cluster Extent Test Statistic and Procedure}
+We desire to assess the statistical significance of each of our clusters.
+To accomplish this, we select any one of these clusters (at random), and consider the distribution of its corresponding test statistic, $Z$:
+\begin{equation}
+  Z = 
+  \begin{cases}
+    \text{Extent of randomly selected cluster}, & nCluster\geq1\\
+    0, & \text{else}
+  \end{cases}
+\end{equation}
+
+
+Let $N$ be the number of participants under consideration and $I, J, K$ represent the number of voxels in the three dimensions. In order to obtain $Z$, we require the following: $X$, a collection of $N$ three-dimensional statistical parameter maps, one per participant; $Y$, a vector of signs/labelings/covariates corresponding to each participant (because all studies considered here use a one-sample testing framework, all elements of $Y$ are $1$); and $CDT$, a cluster defining threshold (a \textit{p}-value).
+
+We can repeat the below procedure multiple times for the observed labelings until $Z$ corresponds to each of our clusters.
+
+\begin{algorithm}[H]
+  \caption{Return Extent of Arbitrary Cluster}
+  \begin{algorithmic}[1]
+    \REQUIRE $X \in \mathbb{R}^{I \times J \times K \times N}$
+    \REQUIRE $Y \in \mathbb{R}^{N}$ \text{; In current setting, } $Y \in \{-1,+1\}^{N}$
+    \REQUIRE $0 < CDT < 1$
+    \FOR{\text{Each voxel}}
+    \STATE Fit a GLM, $X_{i,j,k} \sim Y$, return $p$-value
+    \IF{$p < CDT$}
+    \RETURN{$p$}
+    \ELSE
+    \RETURN{$0$}
+    \ENDIF
+    \ENDFOR
+    \STATE Clusterize, with 26-degree connectivity, thresholded map
+    \IF{$nClusters \geq 1$}
+    \RETURN{Extent of randomly selected cluster}
+    \ELSE
+    \RETURN{$0$}
+    \ENDIF
+  \end{algorithmic}
+\end{algorithm}
+
+\section{Permutation Strategy}
+Under the null hypothesis, the values of $Y$ are independent of $Z$ for our data $X=x$. We can thus realize the null distribution by repeatedly altering $Y$ and observing a new $Z$. Ultimately, we arrive at $p$-values by comparing the $z$ obtained from the true labelings $y$ with the distribution of $Z$ obtained from altered versions of $Y$. In the one-sample t-test case (the one studied here), all $Y$ are $1$, so we alter $Y$ by flipping the sign of each element at random. An exact test would visit all $2^N$ possible flippings of the signs of the elements of $Y$, but for computational reasons, we approximate this by randomly visiting a single possible flipping, and repeating this process 5,000 times.
+
+\section{Permutation Aggregation \& PMF}
+We are ultimately interested in $P(Z>z|X=x)$. Importantly, $Var \big[ Z|X=x,Y=y \big] > 0$  when $nCluster>1$ and there are 2 or more unique cluster extents because $Z$ is a randomly selected from among $nCluster$ options.
+While we could use repeated realizations of $Z$ for a given $x,y$ to approximate $P(Z|X=x,Y=y)$ we can, instead, directly obtain this distribution as the probability mass function (i.e., the normalized histogram of cluster extents) for a given $Y$. This enables us to visit each $Y$ only once. Because visiting any $Y$ is equiprobable under our sampling scheme, $P(Z|X=x)$ is simply the average of $P(Z|X=x,Y=y)$ for all $y$ visited.
+
+\section{Clusterwise, Uncorrected \textit{p}-Values}
+
+We begin with the extents of all clusters observed under the true labels (not only those previously reported which were restricted to those significant at $\subtext{\alpha}{RFT-FWE}<.05$). 
+For each cluster, we assign the observed extent to $z$ and calculate $P(Z>z|X=x)$ (using the null distribution arrived at above) and retain this value as the uncorrected \textit{p}-value for that cluster.
+
+\section{Multiple Testing Correction: FDR}
+
+While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{fdr}, with $\alpha_{FDR}=.05$, retain the $\subtext{p}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. 
+
+\section{Comparing $\subtext{p}{RFT-FWE}$ with $\subtext{p}{FDR}$}
+In Figure 1, we plot $\subtext{p}{RFT-FWE}$ vs $\subtext{p}{FDR}$ on a $-log_{10}$ scale for all clusters significant at $\subtext{\alpha}{RFT-FWE}=.05$.
+We emphasize (with shading) those clusters with corresponding $\subtext{p}{FDR}\leq .05$, i.e., the clusters that remain significant under $\subtext{\alpha}{FDR}=.05$. 
+
+
+\bibliography{biblio}
+\bibliographystyle{plain}
+\end{document}
