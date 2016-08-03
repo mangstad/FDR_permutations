@@ -3,9 +3,6 @@ Permutation based clusterwise FDR correction
 
 This repository houses data, code, results, and manuscripts for preliminary investigations into investigating a permutation framework for clusterwise false discovery rate correction for fMRI data. 
 
-Folders
---
-
 ###Data
 This folder houses single subject and group level results from 4 OpenfMRI.org datasets<sup>[1](#1)</sup>. These are the results as reported in Eklund et. al.<sup>[2](#2)</sup> and were provided to us by Anders Eklund.
 
