@@ -1,4 +1,4 @@
-msgpack
+msgpack-python
 numpy
 scipy
 nibabel
