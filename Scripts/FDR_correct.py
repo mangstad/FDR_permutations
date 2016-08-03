@@ -34,10 +34,6 @@ all_fdr=[]
 all_fwe=[]
 
 
-def get_colors(inp,colormap,vmin=None,vmax=None):
-	norm = plt.Normalize(vmin,vmax)
-	return colormap(norm(inp))
-
 for iThresh in xrange(0,len(zthreshes)):
     for iTask in xrange(0,len(Tasks)):
         for iContrast in xrange(0,len(Contrasts[iTask])):
@@ -141,8 +137,8 @@ cdt001fwe = cdt001fwe[cdt001fwe<0.05]
 
 passfdr01 = cdt01fdr<0.05
 passfdr001 = cdt001fdr<0.05
-color01 = get_colors(passfdr01,plt.cm.winter)
-color001 = get_colors(passfdr001,plt.cm.winter)
+color01 = slab.get_colors(passfdr01,plt.cm.winter)
+color001 = slab.get_colors(passfdr001,plt.cm.winter)
 
 fontAxis = FontProperties()
 fontAxis.set_family('sans-serif')
