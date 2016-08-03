@@ -1,0 +1,6 @@
+msgpack
+numpy
+scipy
+nibabel
+nipype
+mne
