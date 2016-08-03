@@ -7,6 +7,9 @@ import nipype as npy
 import mne
 from mne.stats import fdr_correction
 from nipype.interfaces.fsl.model import Cluster
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
+import matplotlib.patches as patches
 
 zthreshes = [2.3,3.1]
 Tasks = ['RhymeJudgment','MixedGamblesTask','LivingNonliving','WordObject']
@@ -21,12 +24,19 @@ StatsFolder2 = 'stats'
 #load existing stdout.nipype files if they exist 
 LoadResults = 1 
 
+
+
 output = []
 eklsumscounter = 0
 eklsumsr= [1,3,2,0,2,1,5,3,2,6,9,2,4,7,2,10,8,0,0,2,0,10,1,0,9,12,8,11,6,12];
 
 all_fdr=[]
 all_fwe=[]
+
+
+def get_colors(inp,colormap,vmin=None,vmax=None):
+	norm = plt.Normalize(vmin,vmax)
+	return colormap(norm(inp))
 
 for iThresh in xrange(0,len(zthreshes)):
     for iTask in xrange(0,len(Tasks)):
@@ -116,25 +126,6 @@ cdt001 = np.array([sum(output[15:29,6])/sum(output[15:29,5]),
           sum(output[15:29,12])/sum(output[15:29,11]),
           sum(output[15:29,14])/sum(output[15:29,13])])
 
-#make a nice plot
-import matplotlib.pyplot as plt
-from matplotlib.font_manager import FontProperties
-import matplotlib.patches as patches
-
-
-fontAxis = FontProperties()
-fontAxis.set_family('sans-serif')
-fontAxis.set_weight('bold')
-fontLabel = fontAxis.copy()
-fontTitle = fontAxis.copy()
-fontInset = fontAxis.copy()
-
-fontTitle.set_size(48)
-fontAxis.set_size(38)
-fontLabel.set_size(28)
-fontInset.set_size(20)
-
-
 cdt01fdr = np.array(list(slab.flatten(all_fdr[0:15])))
 cdt01fwe = np.array(list(slab.flatten(all_fwe[0:15])))
 cdt001fdr = np.array(list(slab.flatten(all_fdr[15:30])))
@@ -148,15 +139,10 @@ cdt01fwe = cdt01fwe[cdt01fwe<0.05]
 cdt001fdr = cdt001fdr[cdt001fwe<0.05]
 cdt001fwe = cdt001fwe[cdt001fwe<0.05]
 
-def get_colors(inp,colormap,vmin=None,vmax=None):
-	norm = plt.Normalize(vmin,vmax)
-	return colormap(norm(inp))
-
 passfdr01 = cdt01fdr<0.05
 passfdr001 = cdt001fdr<0.05
 color01 = get_colors(passfdr01,plt.cm.winter)
 color001 = get_colors(passfdr001,plt.cm.winter)
-
 
 fontAxis = FontProperties()
 fontAxis.set_family('sans-serif')
@@ -191,7 +177,6 @@ plt.scatter(-1*np.log10(cdt001fwe[cdt001fdr>0.05]),-1*np.log10(cdt001fdr[cdt001f
 ax.add_patch(patches.Rectangle((0,-1*np.log10(0.05)),50,5-(-1*np.log10(0.05)),edgecolor=None,facecolor='#597dbe',alpha=0.1))
 ax.add_patch(patches.Rectangle((0,0),50,-1*np.log10(0.05),edgecolor=None,facecolor='#fe7d59',alpha=0.1))
 plt.ylabel('Clusterwise FDR Corrected P-Value\n'+r'$-log_{10}(p_{_{FDR}})$'+'\n',fontproperties=fontAxis,horizontalalignment='center')
-#plt.xlabel('Clusterwise RFT FWE\nCorrected P-Value\n'+r'$-log_{10}(p_{_{RFT-FWE}})$',fontproperties=fontAxis)
 plt.xticks(np.arange(0,51,5),xticklabels,fontproperties=fontLabel)
 plt.yticks(np.arange(0,6,1),fontproperties=fontLabel)
 plt.tick_params(axis="both",which="both",bottom="on",top="off",labelbottom="on",left="on",right="off",labelleft="on")	
@@ -219,7 +204,6 @@ plt.scatter(-1*np.log10(cdt01fwe[cdt01fdr<0.05]),-1*np.log10(cdt01fdr[cdt01fdr<0
 plt.scatter(-1*np.log10(cdt01fwe[cdt01fdr>0.05]),-1*np.log10(cdt01fdr[cdt01fdr>0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#fe7d59')
 ax.add_patch(patches.Rectangle((0,-1*np.log10(0.05)),50,5-(-1*np.log10(0.05)),edgecolor=None,facecolor='#597dbe',alpha=0.1))
 ax.add_patch(patches.Rectangle((0,0),50,-1*np.log10(0.05),edgecolor=None,facecolor='#fe7d59',alpha=0.1))
-#plt.ylabel('Clusterwise FDR\nCorrected P-Value\n'+r'$-log_{10}(p_{_{FDR}})$',fontproperties=fontAxis)
 plt.xlabel('Clusterwise RFT-FWE\nCorrected P-Value\n'+r'$-log_{10}(p_{_{RFT-FWE}})$',fontproperties=fontAxis)
 plt.xticks(np.arange(0,51,5),xticklabels,fontproperties=fontLabel)
 plt.yticks(np.arange(0,6,1),fontproperties=fontLabel)
