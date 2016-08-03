@@ -18,6 +18,9 @@ OutputFolder2 = 'perms_py_1980_'
 StatsFolder1 = 'Group/'
 StatsFolder2 = 'stats'
 
+#load existing stdout.nipype files if they exist 
+LoadResults = 1 
+
 output = []
 eklsumscounter = 0
 eklsumsr= [1,3,2,0,2,1,5,3,2,6,9,2,4,7,2,10,8,0,0,2,0,10,1,0,9,12,8,11,6,12];
@@ -37,23 +40,24 @@ for iThresh in xrange(0,len(zthreshes)):
             StatsPath = os.path.join(Exp,Task,StatsFolder1,'cope'+str(Contrast)+'.feat',StatsFolder2)
             print('Now working on '+StatsPath)
 
-            #read smoothness file parse for DLH value and volume
-            smoothdata = np.genfromtxt(os.path.join(StatsPath,'smoothness'))
-            dlh = smoothdata[0,1]
-            vol = int(smoothdata[1,1])
-            
-            #cd to directory and run FSL cluster on image to get cluster
-            #exents and FWE p-values
+            #cd to output directory to store FSL cluster output
             cwd = os.getcwd()
             os.chdir(OutputPath)
-            cl = Cluster()
-            cl.inputs.threshold = zthresh
-            cl.inputs.in_file = os.path.join(cwd,StatsPath,'zstat1.nii.gz')
-            cl.inputs.dlh = dlh
-            cl.inputs.volume = vol
-            cl.inputs.pthreshold = 1000
-            cl.inputs.terminal_output = 'file'
-            c = cl.run()
+            
+            if LoadResults!=1:
+                #read smoothness file parse for DLH value and volume
+                smoothdata = np.genfromtxt(os.path.join(StatsPath,'smoothness'))
+                dlh = smoothdata[0,1]
+                vol = int(smoothdata[1,1])
+            
+                cl = Cluster()
+                cl.inputs.threshold = zthresh
+                cl.inputs.in_file = os.path.join(cwd,StatsPath,'zstat1.nii.gz')
+                cl.inputs.dlh = dlh
+                cl.inputs.volume = vol
+                cl.inputs.pthreshold = 1000
+                cl.inputs.terminal_output = 'file'
+                c = cl.run()
             clusterdata = np.genfromtxt(os.path.join(cwd,OutputPath,'stdout.nipype'),skip_header=1)
             #observed cluster sizes
             emp_c = clusterdata[:,1]
