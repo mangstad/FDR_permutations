@@ -19,7 +19,7 @@ The scripts used to generate our permutations and test statistic. For details ab
 This houses saved results for each contrast. The msgpack python module was used for saving results. See the slab.SavePermResults calls in the above scripts for the order of variables saved. Additionally, output from FSL's cluster function is housed in the stdout.nipype files. If the LoadResults variable is set in FDR_correct.py it will load these files directly rather than trying to use FSL.
 
 ###Letter
-LaTeX and PDF versions of our response to Eklund, et al.[^fn2] Submitted to arXiv on 8/3/2016.
+LaTeX and PDF versions of our response to Eklund, et al.<sup>[2](#2)</sup> Submitted to arXiv on 8/3/2016.
 
 ###Methods
 LaTeX and PDF versions of our extended methods from the above letter, going into more detail about our analysis.
