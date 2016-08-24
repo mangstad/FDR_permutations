@@ -164,15 +164,15 @@ ax.spines["right"].set_visible(False)
 plt.setp(ax.spines.values(),linewidth=5)
 ax.yaxis.set_tick_params(width=5,length=10)
 ax.xaxis.set_tick_params(width=5,length=10)
-pfdrtext1 = '$p_{_{FDR}}\leq0.05$'
-pfdrtext2 = '$p_{_{FDR}}>0.05$'
+pfdrtext1 = '$q_{_{FDR}}\leq0.05$'
+pfdrtext2 = '$q_{_{FDR}}>0.05$'
 ax.text(15,-1*np.log10(0.05)+0.3,r''+pfdrtext1,fontproperties=fontTitle,color='#597dbe')
 ax.text(15,-1*np.log10(0.05)-0.5,r''+pfdrtext2,fontproperties=fontTitle,color='#fe7d59')
 plt.scatter(-1*np.log10(cdt001fwe[cdt001fdr<0.05]),-1*np.log10(cdt001fdr[cdt001fdr<0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#597dbe')
 plt.scatter(-1*np.log10(cdt001fwe[cdt001fdr>0.05]),-1*np.log10(cdt001fdr[cdt001fdr>0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#fe7d59')
 ax.add_patch(patches.Rectangle((0,-1*np.log10(0.05)),50,5-(-1*np.log10(0.05)),edgecolor=None,facecolor='#597dbe',alpha=0.1))
 ax.add_patch(patches.Rectangle((0,0),50,-1*np.log10(0.05),edgecolor=None,facecolor='#fe7d59',alpha=0.1))
-plt.ylabel('Clusterwise FDR Corrected P-Value\n'+r'$-log_{10}(p_{_{FDR}})$'+'\n',fontproperties=fontAxis,horizontalalignment='center')
+plt.ylabel('Clusterwise FDR Corrected Q-Value\n'+r'$-log_{10}(q_{_{FDR}})$'+'\n',fontproperties=fontAxis,horizontalalignment='center')
 plt.xticks(np.arange(0,51,5),xticklabels,fontproperties=fontLabel)
 plt.yticks(np.arange(0,6,1),fontproperties=fontLabel)
 plt.tick_params(axis="both",which="both",bottom="on",top="off",labelbottom="on",left="on",right="off",labelleft="on")	
@@ -192,8 +192,8 @@ ax.xaxis.set_tick_params(width=5,length=10)
 ax.annotate('p=.05',xy=(-1*np.log10(0.05),0),xytext=(-1*np.log10(0.05),-0.5),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,horizontalalignment='right')
 ax.annotate('p=.001',xy=(-1*np.log10(0.001),0),xytext=(-1*np.log10(0.001),-0.7),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,horizontalalignment='right')
 ax.annotate('p=.00001',xy=(-1*np.log10(0.00001),0),xytext=(-1*np.log10(0.00001),-0.9),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,horizontalalignment='right')
-pfdrtext1 = '$p_{_{FDR}}\leq.05$'
-pfdrtext2 = '$p_{_{FDR}}>.05$'
+pfdrtext1 = '$q_{_{FDR}}\leq.05$'
+pfdrtext2 = '$q_{_{FDR}}>.05$'
 ax.text(15,-1*np.log10(0.05)+0.3,r''+pfdrtext1,fontproperties=fontTitle,color='#597dbe')
 ax.text(15,-1*np.log10(0.05)-0.5,r''+pfdrtext2,fontproperties=fontTitle,color='#fe7d59')
 plt.scatter(-1*np.log10(cdt01fwe[cdt01fdr<0.05]),-1*np.log10(cdt01fdr[cdt01fdr<0.05]),marker='o',s=100,edgecolors='black',zorder=1,facecolors='#597dbe')
