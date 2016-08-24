@@ -1,51 +1,42 @@
-\documentclass[letterpaper]{article}
+\documentclass[9pt,twocolumn,twoside]{pnas-new}
+% Use the lineno option to display guide line numbers if required.
+% Note that the use of elements such as single-column equations
+% may affect the guide line number alignment. 
 
-\usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage[labelfont=bf,font=it]{caption}
-\usepackage[affil-it]{authblk}
-\usepackage[USenglish]{isodate}
-\usepackage[]{hyperref}
-\usepackage{placeins}
+\templatetype{pnasresearcharticle} % Choose template 
+% {pnasresearcharticle} = Template for a two-column research article
+% {pnasmathematics} = Template for a one-column mathematics article
+% {pnasinvited} = Template for a PNAS invited submission
 
-\renewcommand{\topfraction}{.85}
-\renewcommand{\bottomfraction}{.7}
-\renewcommand{\textfraction}{.15}
-\renewcommand{\floatpagefraction}{.66}
-\renewcommand{\dbltopfraction}{.66}
-\renewcommand{\dblfloatpagefraction}{.66}
-\setcounter{topnumber}{9}
-\setcounter{bottomnumber}{9}
-\setcounter{totalnumber}{20}
-\setcounter{dbltopnumber}{9}
+\title{Which Findings from the Functional Neuroimaging Literature Can We Trust?}
 
-\hypersetup{
-    colorlinks=true,
-    linkcolor=cyan,
-    filecolor=cyan,      
-    urlcolor=cyan,
-    citecolor=black,
-}
 
-\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+
 \newcommand{\subtext}[2]{
 #1_{_{\text{#2}}}
 }
 
-\title{Which Findings from the Functional Neuroimaging Literature Can We Trust?}
-
-\author{Daniel Kessler\thanks{Corresponding Author: kesslerd@umich.edu} \thanks{Contributed equally}}
-\author{Michael Angstadt\samethanks}
-\author{Chandra Sripada\samethanks}
-\affil{Department of Psychiatry\\ University of Michigan, Ann Arbor}
 
 
-\date{\today}
+\author[a,1,2]{Daniel Kessler}
+\author[a,1]{Michael Angstadt} 
+\author[a,1]{Chandra Sripada}
 
-\begin{document}
-\maketitle
+\affil[a]{Department of Psychiatry, University of Michigan, Ann Arbor}
+
+\leadauthor{Kessler}
+
+% Please add here a significance statement to explain the relevance of your work
+% \significancestatement{Authors must submit a 120-word maximum statement about the significance of their research paper written at a level understandable to an undergraduate educated scientist outside their field of speciality. The primary goal of the Significance Statement is to explain the relevance of the work in broad context to a broad readership. The Significance Statement appears in the paper itself and is required for all research papers.}
+
+% Please include corresponding author, author contribution and author declaration information
+\authorcontributions{DK, MA, and CS planned and executed the analysis and wrote the letter.}
+\authordeclaration{The authors have no conflicts of interest to declare.}
+\equalauthors{\textsuperscript{1}All authors contributed equally to this work.}
+\correspondingauthor{\textsuperscript{2}To whom correspondence should be addressed. E-mail: kesslerd@umich.edu}
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+\keywords{Keyword 1 $|$ Keyword 2 $|$ Keyword 3 $|$ ...} 
 
 \begin{abstract}
 In their recent ``Cluster Failure'' paper, Eklund and colleagues cast doubt on the accuracy of a widely used statistical test in functional neuroimaging. 
@@ -53,7 +44,25 @@ Here, we leverage nonparametric methods that control the false discovery rate to
 We show that, in the task studies examined by Eklund et al., most clusters originally reported to be significant are indeed trustworthy by the false discovery rate benchmark.
 \end{abstract}
 
-In a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund16} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction techniques for cluster-level inference do not control errors as they are supposed to, and this discrepancy is particularly pronounced for lenient cluster defining thresholds (CDT). 
+
+\dates{This manuscript was compiled on \today}
+\doi{\url{www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX}}
+
+\begin{document}
+
+% Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
+% You should only change this length when you've finalised the article contents.
+\verticaladjustment{-2pt}
+
+\maketitle
+\thispagestyle{firststyle}
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+
+
+
+% If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
+\dropcap{I}n a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund16} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction techniques for cluster-level inference do not control errors as they are supposed to, and this discrepancy is particularly pronounced for lenient cluster defining thresholds (CDT). 
 Moreover, they point to violations of RFT assumptions as the culprit for this discrepancy.
 
 Given these results, what advice can we offer to the reader exploring the existing fMRI literature when faced with a table of cluster-wise RFT-based FWE corrected \textit{p}-values ($\subtext{p}{RFT-FWE}$)? 
@@ -68,7 +77,7 @@ Given these considerations, a reader faced with a table of clusters significant 
 We address this question using the same task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al., which is available from openfMRI \cite{poldrack_toward_2013})  (code, data, and Extended Methods for present analysis are at \url{http://github.com/mangstad/FDR_permutations}).
 
 In brief, for each contrast, we generate 5,000 realizations of the data through sign-flipping. 
-To obtain a null distribution of cluster extents (for an arbitrarily chosen cluster), we combine normalized frequency counts of cluster extents calculated at each realization\footnote{Realizations with no clusters assign all their mass to 0.}. 
+To obtain a null distribution of cluster extents (for an arbitrarily chosen cluster), we combine normalized frequency counts of cluster extents calculated at each realization (realizations with no clusters assign all their mass to 0). 
 This distribution is used to assign uncorrected \textit{p}-values to each observed cluster. 
 We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{fdr} FDR procedure with $\subtext{\alpha}{FDR}=.05$.
  
@@ -94,7 +103,7 @@ These results offer initial quantitative guidance on interpreting the past liter
 A more comprehensive examination of fMRI task data sets that used RFT-based FWE may further refine this guidance. 
 
 
-\FloatBarrier
+
 \bibliography{biblio}
 \bibliographystyle{plain}  
 
