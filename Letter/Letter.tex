@@ -62,7 +62,7 @@ We show that, in the task studies examined by Eklund et al., most clusters origi
 
 
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
-\dropcap{I}n a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund16} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction techniques for cluster-level inference do not control errors as they are supposed to, and this discrepancy is particularly pronounced for lenient cluster defining thresholds (CDT). 
+\dropcap{I}n a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund_cluster_2016} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction techniques for cluster-level inference do not control errors as they are supposed to, and this discrepancy is particularly pronounced for lenient cluster defining thresholds (CDT). 
 Moreover, they point to violations of RFT assumptions as the culprit for this discrepancy.
 
 Given these results, what advice can we offer to the reader exploring the existing fMRI literature when faced with a table of cluster-wise RFT-based FWE corrected \textit{p}-values ($\subtext{p}{RFT-FWE}$)? 
@@ -70,7 +70,7 @@ To suggest caution is reasonable but incomplete; we require concrete, quantitati
 
 Here, we undertake an initial attempt to construct such guidance.
 We heed Eklund et al.'s warning and prefer null distributions obtained through nonparametric methods rather than through RFT.
-However, we focus on the False Discovery Rate (FDR; \cite{fdr}), which is a more natural target for multiple testing control (a point well recognized by Nichols in previous work; \cite{genovese02}).
+However, we focus on the False Discovery Rate (FDR; \cite{benjamini_controlling_1995}), which is a more natural target for multiple testing control (a point well recognized by Nichols in previous work; \cite{genovese_thresholding_2002}).
 A researcher determining which clusters are significant is more concerned with the proportion that are false positives (FDR) than whether \textit{any} are false positives (FWE).
 Given these considerations, a reader faced with a table of clusters significant under RFT-FWE correction might naturally ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
 
@@ -79,7 +79,7 @@ We address this question using the same task fMRI data \cite{duncan_consistency_
 In brief, for each contrast, we generate 5,000 realizations of the data through sign-flipping. 
 To obtain a null distribution of cluster extents (for an arbitrarily chosen cluster), we combine normalized frequency counts of cluster extents calculated at each realization (realizations with no clusters assign all their mass to 0). 
 This distribution is used to assign uncorrected \textit{p}-values to each observed cluster. 
-We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{fdr} FDR procedure with $\subtext{\alpha}{FDR}=.05$.
+We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{benjamini_controlling_1995} FDR procedure with $\subtext{\alpha}{FDR}=.05$.
  
 We compare $\subtext{p}{RFT-FWE}$-values to $\subtext{q}{FDR}$-values and note whether they survive FDR-correction under $\subtext{\alpha}{FDR}=.05$. 
 We generate separate plots for this analysis conducted at CDT=\{.001, .01\}.
@@ -95,8 +95,8 @@ We submitted the same task data analyzed by Eklund et al. to nonparametric clust
 \end{figure} 
 
 Results (see Figure \ref{fig:p-plot}) show that for CDT=.001, only one cluster significant at $\subtext{\alpha}{RFT-FWE}\leq .05$ failed to survive at $\subtext{\alpha}{FDR}\leq .05$, thus suggesting RFT-based FWE closely approximates effective FDR control.
-This finding has promising implications for the existing body of fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_blog,woo14}.
-For CDT=.01, used in approximately 3,500 studies \cite{nichols_blog,woo14}, Eklund et al. and others \cite{flandin_analysis_2016} have urged caution and our results agree. We found that $\subtext{\alpha}{RFT-FWE}$ must be very strict (at least .00001) for effective FDR control to be achieved (i.e., many $.05 \geq \subtext{p}{RFT-FWE} \geq .00001$ fail to survive correction at $\subtext{\alpha}{FDR}=.05$).
+This finding has promising implications for the existing body of fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
+For CDT=.01, used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}, Eklund et al. and others \cite{flandin_analysis_2016} have urged caution and our results agree. We found that $\subtext{\alpha}{RFT-FWE}$ must be very strict (at least .00001) for effective FDR control to be achieved (i.e., many $.05 \geq \subtext{p}{RFT-FWE} \geq .00001$ fail to survive correction at $\subtext{\alpha}{FDR}=.05$).
 
 
 These results offer initial quantitative guidance on interpreting the past literature that employed RFT-based FWE, providing a more granular appreciation of the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of the result.
