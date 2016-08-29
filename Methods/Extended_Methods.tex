@@ -102,11 +102,11 @@ For each cluster, we assign the observed extent to $z$ and calculate $P(Z>z|X=x)
 
 \section{Multiple Testing Correction: FDR}
 
-While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{fdr}, with $\alpha_{FDR}=.05$, retain the $\subtext{p}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. 
+While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{fdr}, with $\alpha_{FDR}=.05$, retain the $\subtext{q}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. 
 
-\section{Comparing $\subtext{p}{RFT-FWE}$ with $\subtext{p}{FDR}$}
-In Figure 1, we plot $\subtext{p}{RFT-FWE}$ vs $\subtext{p}{FDR}$ on a $-log_{10}$ scale for all clusters significant at $\subtext{\alpha}{RFT-FWE}=.05$.
-We emphasize (with shading) those clusters with corresponding $\subtext{p}{FDR}\leq .05$, i.e., the clusters that remain significant under $\subtext{\alpha}{FDR}=.05$. 
+\section{Comparing $\subtext{p}{RFT-FWE}$ with $\subtext{q}{FDR}$}
+In Figure 1, we plot $\subtext{p}{RFT-FWE}$ vs $\subtext{q}{FDR}$ on a $-log_{10}$ scale for all clusters significant at $\subtext{\alpha}{RFT-FWE}=.05$.
+We emphasize (with shading) those clusters with corresponding $\subtext{q}{FDR}\leq .05$, i.e., the clusters that remain significant under $\subtext{\alpha}{FDR}=.05$. 
 
 
 \bibliography{biblio}
