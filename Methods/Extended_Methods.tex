@@ -37,17 +37,17 @@
 
 \section{Data \& Code}
 This document, along with source code and data for all analyses, is available at \url{http://github.com/mangstad/FDR_permutations}. 
-Anders Eklund graciously shared with us the per-participant "first-level" maps as well as group-level results for each contrast analyzed as part of their study  \cite{eklund16}. These contrasts were in turn derived from two studies \cite{duncan_consistency_2009,tom_neural_2007}, which were available at openfMRI \cite{poldrack_toward_2013}. 
+Anders Eklund graciously shared with us the per-participant "first-level" maps as well as group-level results for each contrast analyzed as part of their study  \cite{eklund_cluster_2016}. These contrasts were in turn derived from two studies \cite{duncan_consistency_2009,tom_neural_2007}, which were available at openfMRI \cite{poldrack_toward_2013}. 
 
 %All data was originally obtained from openfMRI \cite{poldrack_toward_2013}, which served as repository for two original studies \cite{duncan_consistency_2009,tom_neural_2007}. 
-%Anders Eklund graciously shared with us the per-participant "first-level" maps for each contrast from each study as well as group-level results \cite{eklund16}. This document, along with source code and data for all analyses, is available at \url{http://github.com/mangstad/FDR_permutations}.
+%Anders Eklund graciously shared with us the per-participant "first-level" maps for each contrast from each study as well as group-level results \cite{eklund_cluster_2016}. This document, along with source code and data for all analyses, is available at \url{http://github.com/mangstad/FDR_permutations}.
 
 \section{Overview}
 We consider each contrast from each study separately and perform the following steps. 
 In order to generate a realization of the null, we randomly flip the sign of each participant's contrast map, conduct a voxelwise, one-sample t-test across participants, apply a cluster defining threshold (CDT) of \{.001,.01\}, and then record the voxel extents of all clusters that emerge (identified as connected components using the FSL-standard 26-degree connectivity criteria that considers voxels connected if they share any face, edge, or vertex). 
 We repeat this procedure 5,000 times to obtain an empirical mass function of cluster sizes under the null. 
 To obtain a per-cluster uncorrected \textit{p}-value, we compare the extent for each cluster that arises from the unflipped design to the contrast's null distribution. 
-Finally, we submit the vector of uncorrected \textit{p}-values to an FDR procedure \cite{fdr} with $\alpha = .05$.
+Finally, we submit the vector of uncorrected \textit{p}-values to an FDR procedure \cite{benjamini_controlling_1995} with $\alpha = .05$.
 
 \section{Cluster Extent Test Statistic and Procedure}
 We desire to assess the statistical significance of each of our clusters.
@@ -102,13 +102,13 @@ For each cluster, we assign the observed extent to $z$ and calculate $P(Z>z|X=x)
 
 \section{Multiple Testing Correction: FDR}
 
-While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{fdr}, with $\alpha_{FDR}=.05$, retain the $\subtext{q}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. 
+While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{benjamini_controlling_1995}, with $\alpha_{FDR}=.05$, retain the $\subtext{q}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. 
 
 \section{Comparing $\subtext{p}{RFT-FWE}$ with $\subtext{q}{FDR}$}
 In Figure 1, we plot $\subtext{p}{RFT-FWE}$ vs $\subtext{q}{FDR}$ on a $-log_{10}$ scale for all clusters significant at $\subtext{\alpha}{RFT-FWE}=.05$.
 We emphasize (with shading) those clusters with corresponding $\subtext{q}{FDR}\leq .05$, i.e., the clusters that remain significant under $\subtext{\alpha}{FDR}=.05$. 
 
 
-\bibliography{biblio}
+\bibliography{../Letter/biblio}
 \bibliographystyle{plain}
 \end{document}
