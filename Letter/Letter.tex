@@ -89,14 +89,14 @@ We generate separate plots for this analysis conducted at CDT=\{.001, .01\}.
 \centering
 \caption{
 \textbf{Assessing RFT-Based FWE Using an FDR Benchmark.}
-We submitted the same task data analyzed by Eklund et al. to nonparametric clusterwise FDR analysis. For $\text{CDT}=.001$ (top), RFT-based FWE approximates effective FDR control with $\subtext{\alpha}{FDR} = .05$. For $\text{CDT}=.01$ (bottom), only clusters with $\subtext{p}{RFT-FWE} \leq .00001$ were reliably significant at $\subtext{\alpha}{FDR}=.05$. 
+We submitted the same task data analyzed by Eklund et al. to nonparametric clusterwise FDR analysis. For $\text{CDT}=.001$ (top), RFT-based FWE approximates effective FDR control with $\subtext{\alpha}{FDR} = .05$. For $\text{CDT}=.01$ (bottom), only clusters with $\subtext{p}{RFT-FWE} \leq .00001$ reliably survived correction at $\subtext{\alpha}{FDR}=.05$. 
 \label{fig:p-plot}
 }
 \end{figure} 
 
-Results (see Figure \ref{fig:p-plot}) show that for CDT=.001, only one cluster significant at $\subtext{\alpha}{RFT-FWE}\leq .05$ failed to be significant at $\subtext{\alpha}{FDR}\leq .05$, thus suggesting RFT-based FWE closely approximates effective FDR control.
+Results (see Figure \ref{fig:p-plot}) show that for CDT=.001, only one cluster significant at $\subtext{\alpha}{RFT-FWE}\leq .05$ failed to survive at $\subtext{\alpha}{FDR}\leq .05$, thus suggesting RFT-based FWE closely approximates effective FDR control.
 This finding has promising implications for the existing body of fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_blog,woo14}.
-For CDT=.01, used in approximately 3,500 studies \cite{nichols_blog,woo14}, Eklund et al. and others \cite{flandin_analysis_2016} have urged caution and our results agree. We found that $\subtext{\alpha}{RFT-FWE}$ must be very strict (at least .00001) for effective FDR control to be achieved (i.e., many $.05 \geq \subtext{p}{RFT-FWE} \geq .00001$ fail to meet significance at $\subtext{\alpha}{FDR}=.05$).
+For CDT=.01, used in approximately 3,500 studies \cite{nichols_blog,woo14}, Eklund et al. and others \cite{flandin_analysis_2016} have urged caution and our results agree. We found that $\subtext{\alpha}{RFT-FWE}$ must be very strict (at least .00001) for effective FDR control to be achieved (i.e., many $.05 \geq \subtext{p}{RFT-FWE} \geq .00001$ fail to survive correction at $\subtext{\alpha}{FDR}=.05$).
 
 
 These results offer initial quantitative guidance on interpreting the past literature that employed RFT-based FWE, providing a more granular appreciation of the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of the result.
