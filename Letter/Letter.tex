@@ -81,7 +81,7 @@ To obtain a null distribution of cluster extents (for an arbitrarily chosen clus
 This distribution is used to assign uncorrected \textit{p}-values to each observed cluster. 
 We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{fdr} FDR procedure with $\subtext{\alpha}{FDR}=.05$.
  
-We compare $\subtext{p}{RFT-FWE}$-values to $\subtext{p}{FDR}$-values and note whether they remain significant under $\subtext{\alpha}{FDR}=.05$. 
+We compare $\subtext{p}{RFT-FWE}$-values to $\subtext{q}{FDR}$-values and note whether they survive FDR-correction under $\subtext{\alpha}{FDR}=.05$. 
 We generate separate plots for this analysis conducted at CDT=\{.001, .01\}.
 
 \begin{figure}[ht]
