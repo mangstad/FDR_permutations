@@ -79,7 +79,7 @@ We address this question using the same task fMRI data \cite{duncan_consistency_
 In brief, for each contrast, we generate 5,000 realizations of the data through sign-flipping. 
 To obtain a null distribution of cluster extents (for an arbitrarily chosen cluster), we combine normalized frequency counts of cluster extents calculated at each realization (realizations with no clusters assign all their mass to 0). 
 This distribution is used to assign uncorrected \textit{p}-values to each observed cluster. 
-We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{benjamini_controlling_1995} FDR procedure with $\subtext{\alpha}{FDR}=.05$.
+We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{benjamini_controlling_1995} FDR procedure with $\subtext{\alpha}{FDR}=.05$ (cf. \cite{chumbley_false_2009} for a parametric implementation of cluster-wise FDR).
  
 We compare $\subtext{p}{RFT-FWE}$-values to $\subtext{q}{FDR}$-values and note whether they survive FDR-correction under $\subtext{\alpha}{FDR}=.05$. 
 We generate separate plots for this analysis conducted at CDT=\{.001, .01\}.
