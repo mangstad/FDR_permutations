@@ -84,7 +84,7 @@ We next submit the vector of uncorrected \textit{p}-values for each contrast to 
 We compare $\subtext{p}{RFT-FWE}$-values to $\subtext{q}{FDR}$-values and note whether they survive FDR-correction under $\subtext{\alpha}{FDR}=.05$. 
 We generate separate plots for this analysis conducted at CDT=\{.001, .01\}.
 
-\begin{figure}[ht]
+\begin{figure*}[ht]
 \includegraphics[width=1.0\textwidth]{../Results/FDR_surviving_clusters.png}
 \centering
 \caption{
@@ -92,7 +92,7 @@ We generate separate plots for this analysis conducted at CDT=\{.001, .01\}.
 We submitted the same task data analyzed by Eklund et al. to nonparametric clusterwise FDR analysis. For $\text{CDT}=.001$ (top), RFT-based FWE approximates effective FDR control with $\subtext{\alpha}{FDR} = .05$. For $\text{CDT}=.01$ (bottom), only clusters with $\subtext{p}{RFT-FWE} \leq .00001$ reliably survived correction at $\subtext{\alpha}{FDR}=.05$. 
 \label{fig:p-plot}
 }
-\end{figure} 
+\end{figure*}
 
 Results (see Figure \ref{fig:p-plot}) show that for CDT=.001, only one cluster significant at $\subtext{\alpha}{RFT-FWE}\leq .05$ failed to survive at $\subtext{\alpha}{FDR}\leq .05$, thus suggesting RFT-based FWE closely approximates effective FDR control.
 This finding has promising implications for the existing body of fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
