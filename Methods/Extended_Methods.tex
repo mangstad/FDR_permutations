@@ -102,7 +102,7 @@ For each cluster, we assign the observed extent to $z$ and calculate $P(Z>z|X=x)
 
 \section{Multiple Testing Correction: FDR}
 
-While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{benjamini_controlling_1995}, with $\alpha_{FDR}=.05$, retain the $\subtext{q}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. 
+While the uncorrected \textit{p}-values from above were obtained using a nonparametric rather than parametric procedure, we follow the approach from Chumbley and Friston \cite{chumbley_false_2009}: We submit the uncorrected \textit{p}-values as a vector to the FDR controlling procedure established in Bejamini and Hochberg \cite{benjamini_controlling_1995}, with $\alpha_{FDR}=.05$, retain the $\subtext{q}{FDR}$-value, and record whether the null hypothesis ought to be rejected (significant value) or not. As indicated above, we are certainly not the first to apply FDR to cluster properties; cf. \cite{chumbley_false_2009,heller_cluster-based_2006,chumbley_topological_2010}.
 
 \section{Comparing $\subtext{p}{RFT-FWE}$ with $\subtext{q}{FDR}$}
 In Figure 1, we plot $\subtext{p}{RFT-FWE}$ vs $\subtext{q}{FDR}$ on a $-log_{10}$ scale for all clusters significant at $\subtext{\alpha}{RFT-FWE}=.05$.
