@@ -71,7 +71,7 @@ To suggest caution is reasonable but incomplete; we require concrete, quantitati
 Here, we undertake an initial attempt to construct such guidance.
 We heed Eklund et al.'s warning and prefer null distributions obtained through nonparametric methods rather than through RFT.
 However, we focus on the False Discovery Rate (FDR; \cite{benjamini_controlling_1995}), which is a more natural target for multiple testing control (a point well recognized by Nichols in previous work; \cite{genovese_thresholding_2002}).
-A researcher determining which clusters are significant is more concerned with the proportion that are false positives (FDR) than whether \textit{any} are false positives (FWE).
+A researcher is more naturally concerned with the proportion of reported clusters that are false positives (FDR) than whether \textit{any} are false positives (FWE).
 Given these considerations, a reader faced with a table of clusters significant under RFT-FWE correction might naturally ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
 
 We address this question using the same task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al., which is available from openfMRI \cite{poldrack_toward_2013})  (code, data, and Extended Methods for present analysis are at \url{http://github.com/mangstad/FDR_permutations}).
