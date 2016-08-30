@@ -210,4 +210,5 @@ plt.title('CDT .01',fontproperties=fontTitle)
 ax.annotate('smaller p-values',xy=(45,.25),xytext=(25,.25),arrowprops=dict(facecolor='black',shrink=0.1),fontproperties=fontLabel,verticalalignment='center')
 
 
+plt.savefig(os.path.join(OutputFolder1,'FDR_surviving_clusters.pdf'), bbox_inches='tight',dpi=dpi,orientation='portrait',papertype='letter')
 plt.savefig(os.path.join(OutputFolder1,'FDR_surviving_clusters.png'), bbox_inches='tight',dpi=dpi,orientation='portrait',papertype='letter')
