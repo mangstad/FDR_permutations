@@ -74,7 +74,7 @@ However, we focus on the False Discovery Rate (FDR; \cite{benjamini_controlling_
 A researcher is naturally more concerned with the proportion of reported clusters that are false positives (FDR) than whether \textit{any} are false positives (FWE).
 Given these considerations, a reader faced with a table of clusters significant under RFT-FWE correction might naturally ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
 
-We address this question using task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al., available from openfMRI \cite{poldrack_toward_2013}.
+We address this question using task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al. (available from openfMRI \cite{poldrack_toward_2013}).
 
 For each contrast, we generate 5,000 realizations of the data through sign-flipping (our code, data, Extended Methods: \url{http://github.com/mangstad/FDR_permutations}).
 To obtain a null distribution of cluster extents (for an arbitrarily chosen cluster), we combine normalized frequency counts of cluster extents calculated at each realization (realizations with no clusters assign all their mass to 0). 
