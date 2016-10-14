@@ -88,10 +88,10 @@ We submitted the same task data analyzed by Eklund et al. \cite{eklund_cluster_2
 }
 \end{figure*}
 
-Results (see Figure \ref{fig:p-plot}) show that for CDT=.001, only one cluster significant at $\subtext{\alpha}{RFT-FWE} = .05$ failed to survive at $\subtext{\alpha}{FDR} = .05$, thus suggesting RFT-based FWE closely approximates effective FDR control.
-This finding has promising implications for past fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
-For CDT=.01, used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}, Eklund et al. and others \cite{flandin_analysis_2016} have urged caution and our results agree. We found that $\subtext{\alpha}{RFT-FWE}$ must be very strict for effective FDR control (i.e., many $.00001 \leq \subtext{p}{RFT-FWE} \leq .05$ fail to survive correction at $\subtext{\alpha}{FDR}=.05$).
-
+Based on our results (see Figure \ref{fig:p-plot}), we can suggest that nearly all clusters identified as significant when using CDT=.001 and RFT-FWE correction are trustworthy by the nonparametric FDR benchmark.
+For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with corrected-p less than .00001 appear consistently trusthworthy results by the nonparametric FDR benchmark, whereas clusters with corrected-p greater than .00001 are not reliabily trustworthy.
+These findings have promising implications for past fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
+While the story is more mixed for CDT=.01 (used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}), our findings suggest that not all clusters identified are unreliable: we identify .00001 as a crucial cutoff for trustworthiness.
 
 These results offer initial guidance on interpreting past literature that employed RFT-based FWE, providing a more granular appreciation of the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of the result.
 A more comprehensive examination of fMRI task data sets that used RFT-based FWE may further refine this guidance.
