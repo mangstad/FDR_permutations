@@ -89,9 +89,9 @@ We submitted the same task data analyzed by Eklund et al. \cite{eklund_cluster_2
 \end{figure*}
 
 Based on our results (see Figure \ref{fig:p-plot}), we can suggest that nearly all clusters identified as significant when using CDT=.001 and RFT-FWE correction are trustworthy by the nonparametric FDR benchmark.
-For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with corrected-p less than .00001 appear consistently trusthworthy results by the nonparametric FDR benchmark, whereas clusters with corrected-p greater than .00001 are not reliabily trustworthy.
+For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with corrected-p less than .00001 appear consistently trusthworthy by the nonparametric FDR benchmark, whereas clusters with corrected-p greater than this value are not reliabily trustworthy.
 These findings have promising implications for past fMRI studies using RFT-based cluster-level inference that used this stricter CDT, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
-While the story is more mixed for CDT=.01 (used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}), our findings suggest that not all clusters identified are unreliable: we identify .00001 as a crucial cutoff for trustworthiness.
+While the story is more mixed for CDT=.01 (used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}), our findings suggest that not all clusters reported in the relevant studies are unreliable: we identify .00001 as a crucial cutoff for trustworthiness.
 
 These results offer initial guidance on interpreting past literature that employed RFT-based FWE, providing a more granular appreciation of the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of the result.
 A more comprehensive examination of fMRI task data sets that used RFT-based FWE may further refine this guidance.
