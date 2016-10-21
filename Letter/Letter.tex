@@ -59,19 +59,19 @@
 \dropcap{I}n a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund_cluster_2016} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction techniques for cluster-level inference do not control errors as they are supposed to, and this discrepancy is more pronounced for lenient cluster defining thresholds (CDT). 
 Moreover, they point to violations of RFT assumptions as the culprit for this discrepancy.
 
-Given these results, what advice can we offer to the reader exploring existing fMRI literature when faced with a table of cluster-wise RFT-based FWE-corrected \textit{p}-values ($\subtext{p}{RFT-FWE}$)? 
+Given these results, how should we interpret existing fMRI literature that used RFT-based FWE-corrected \textit{p}-values ($\subtext{p}{RFT-FWE}$)? 
 To suggest caution is reasonable but incomplete; we require concrete, quantitative guidelines to enable appropriate calibration of skepticism.
 
-Here, we undertake an initial attempt to construct such guidance.
-We heed Eklund et al.'s warning and prefer null distributions obtained through nonparametric methods rather than RFT.
+Here, we undertake an initial attempt at such guidance.
+We heed Eklund et al.'s warning and prefer nonparametric null distributions to RFT.
 However, we focus on the False Discovery Rate (FDR); \cite{benjamini_controlling_1995}), which is a more natural target for multiple testing control (as recognized by Nichols in previous work; \cite{genovese_thresholding_2002}):
 A researcher is naturally more concerned with the proportion of reported clusters that are false positives (FDR) than whether \textit{any} are false positives (FWE).
-Given these considerations, a reader faced with a table of clusters significant under RFT-FWE correction might ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
+Thus, a reader faced with a table of clusters significant under RFT-FWE correction might ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
 
 We address this question using task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al. (available from openfMRI \cite{poldrack_toward_2013}).
 
-For each contrast, we generate 5,000 realizations of the data through sign-flipping (our code, data, Extended Methods: \url{http://github.com/mangstad/FDR_permutations}).
-To obtain a null distribution of cluster extents (for an arbitrarily chosen cluster), we combine normalized frequencies of extents at each realization.
+For each contrast, we generate 5,000 realizations of the data through sign-flipping (code, data, Extended Methods: \url{http://github.com/mangstad/FDR_permutations}).
+To obtain a null distribution of cluster extents (for an arbitrary cluster), we combine normalized frequencies of extents at each realization.
 This distribution is used to assign uncorrected \textit{p}-values to each observed cluster. 
 We next submit the vector of uncorrected \textit{p}-values for each contrast to Benjamini and Hochberg's \cite{benjamini_controlling_1995} FDR procedure with $\subtext{\alpha}{FDR}=.05$ (cf. \cite{chumbley_false_2009} for a parametric implementation of cluster-wise FDR).
  
@@ -88,11 +88,11 @@ We submitted the same task data analyzed by Eklund et al. \cite{eklund_cluster_2
 }
 \end{figure*}
 
-Based on our results (Figure \ref{fig:p-plot}), we can suggest that nearly all clusters identified as significant when using CDT=.001 and RFT-FWE correction are trustworthy by the nonparametric FDR benchmark.
-For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with corrected-p less than .00001 appear consistently trusthworthy by the nonparametric FDR benchmark, whereas clusters with corrected-p greater than this value are not reliabily trustworthy.
+Based on our results (Figure \ref{fig:p-plot}), we suggest nearly all clusters identified as significant when using CDT=.001 and RFT-FWE correction are trustworthy by the nonparametric FDR benchmark.
+For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with $\subtext{p}{RFT-FWE}<.00001$ appear consistently trusthworthy by the nonparametric FDR benchmark, whereas clusters with $\subtext{p}{RFT-FWE}>.00001$ are not reliabily trustworthy.
 
 These findings have promising implications for past fMRI studies using RFT-based cluster-level inference that used this stricter CDT=.001, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
-While the story is more mixed for CDT=.01 (used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}), our findings suggest that not all clusters reported in the relevant studies are unreliable: we identify .00001 as a potential cutoff for trustworthiness.
+While the story is mixed for CDT=.01 (used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}), our findings suggest that not all such previously reported clusters are unreliable: we identify .00001 as a potential cutoff for trustworthiness.
 
 Our results offer initial guidance on interpreting past literature that employed RFT-based FWE, providing a more granular appreciation of the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of the result.
 A more comprehensive examination of fMRI task data sets that used RFT-based FWE may further refine this guidance.
