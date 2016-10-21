@@ -56,19 +56,19 @@
 
 
 % If your first paragraph (i.e. with the \dropcap) contains a list environment (quote, quotation, theorem, definition, enumerate, itemize...), the line after the list may have some extra indentation. If this is the case, add \parshape=0 to the end of the list environment.
-\dropcap{I}n a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund_cluster_2016} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction techniques for cluster-level inference do not control errors as they are supposed to, and this discrepancy is more pronounced for lenient cluster defining thresholds (CDT). 
+\dropcap{I}n a substantial contribution to the functional magnetic resonance imaging (fMRI) field, Eklund et al. \cite{eklund_cluster_2016} use nonparametric methods to demonstrate that random field theory (RFT)-based family-wise error (FWE) correction for cluster inference does not control errors appropriately, and this discrepancy is more pronounced for lenient cluster defining thresholds (CDT). 
 Moreover, they point to violations of RFT assumptions as the culprit for this discrepancy.
 
 Given these results, how should we interpret existing fMRI literature that used RFT-based FWE-corrected \textit{p}-values ($\subtext{p}{RFT-FWE}$)? 
 To suggest caution is reasonable but incomplete; we require concrete, quantitative guidelines to enable appropriate calibration of skepticism.
 
 Here, we undertake an initial attempt at such guidance.
-We heed Eklund et al.'s warning and prefer nonparametric null distributions to RFT.
+We heed \cite{eklund_cluster_2016}'s warning and prefer nonparametric null distributions to RFT.
 However, we focus on the False Discovery Rate (FDR); \cite{benjamini_controlling_1995}), which is a more natural target for multiple testing control (as recognized by Nichols in previous work; \cite{genovese_thresholding_2002}):
 A researcher is naturally more concerned with the proportion of reported clusters that are false positives (FDR) than whether \textit{any} are false positives (FWE).
-Thus, a reader faced with a table of clusters significant under RFT-FWE correction might ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
+Thus, a reader considering a table of clusters significant under RFT-FWE might ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
 
-We address this question using task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al. (available from openfMRI \cite{poldrack_toward_2013}).
+We address this question using task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed in \cite{eklund_cluster_2016} (available from openfMRI \cite{poldrack_toward_2013}).
 
 For each contrast, we generate 5,000 realizations of the data through sign-flipping (code, data, Extended Methods: \url{http://github.com/mangstad/FDR_permutations}).
 To obtain a null distribution of cluster extents (for an arbitrary cluster), we combine normalized frequencies of extents at each realization.
