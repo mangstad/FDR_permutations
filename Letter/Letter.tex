@@ -63,12 +63,12 @@ Given these results, how should we interpret existing fMRI literature that used 
 To suggest caution is reasonable but incomplete; we require concrete, quantitative guidelines to enable appropriate calibration of skepticism.
 
 Here, we undertake an initial attempt at such guidance.
-We heed \cite{eklund_cluster_2016}'s warning and prefer nonparametric null distributions to RFT.
+We heed Eklund et al.'s warning and prefer nonparametric null distributions to RFT.
 However, we focus on the False Discovery Rate (FDR; \cite{benjamini_controlling_1995}), which is a more natural target for multiple testing control (as recognized by Nichols in previous work; \cite{genovese_thresholding_2002}):
 A researcher is naturally more concerned with the proportion of reported clusters that are false positives (FDR) than whether \textit{any} are false positives (FWE).
 Thus, a reader considering a table of clusters significant under RFT-FWE might ask: Which of these results would have survived had the study instead employed a nonparametric FDR-based method?
 
-We address this question using task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed in \cite{eklund_cluster_2016} (available from openfMRI \cite{poldrack_toward_2013}).
+We address this question using the same task fMRI data \cite{duncan_consistency_2009,tom_neural_2007} analyzed by Eklund et al. (available from openfMRI \cite{poldrack_toward_2013}).
 
 For each contrast, we generate 5,000 realizations of the data through sign-flipping (code, data, Extended Methods: \url{http://github.com/mangstad/FDR_permutations}).
 To obtain a null distribution of cluster extents (for an arbitrary cluster), we combine normalized frequencies of extents at each realization.
@@ -89,13 +89,13 @@ We submitted the same task data analyzed by Eklund et al. \cite{eklund_cluster_2
 \end{figure*}
 
 Based on our results (Figure \ref{fig:p-plot}), we suggest nearly all clusters identified as significant when using CDT=.001 and RFT-FWE correction are trustworthy by the nonparametric FDR benchmark.
-For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with $\subtext{p}{RFT-FWE}<.00001$ appear consistently trusthworthy by the nonparametric FDR benchmark, whereas clusters with $\subtext{p}{RFT-FWE}>.00001$ are not reliabily trustworthy.
+For clusters identified as significant with CDT=.01 and RFT-FWE correction, the guidance depends on the corrected p-value: clusters with $\subtext{p}{RFT-FWE}<.00001$ appear consistently trusthworthy by the nonparametric FDR benchmark, whereas clusters above this value are not reliabily trustworthy.
 
-These findings have promising implications for past fMRI studies using RFT-based cluster-level inference that used this stricter CDT=.001, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
+These findings have promising implications for past fMRI studies using RFT-based cluster-level inference that used CDT=.001, estimated to be upwards of 8,500 reports \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}.
 While the story is mixed for CDT=.01 (used in approximately 3,500 studies \cite{nichols_bibliometrics_2016,woo_cluster-extent_2014}), our findings suggest that not all such previously reported clusters are unreliable: we identify .00001 as a potential cutoff for trustworthiness.
 
-Our results offer initial guidance on interpreting past literature that employed RFT-based FWE, providing a more granular appreciation of the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of the result.
-A more comprehensive examination of fMRI task data sets that used RFT-based FWE may further refine this guidance.
+Our results provide more granular guidance on the relationship between $\subtext{p}{RFT-FWE}$ and trustworthiness of results.
+A more comprehensive examination of fMRI task datasets that used RFT-based FWE can further refine this guidance.
 
 \acknow{We thank Anders Eklund and Thomas Nichols for providing us with processed data and for very helpful comments on earlier versions of this letter.}
 
